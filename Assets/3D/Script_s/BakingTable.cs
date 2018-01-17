@@ -70,7 +70,7 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
 
         if(elemLis.Count == 1)
         {
-            Cooking();
+            StartCoroutine(Cooking());
         }
     }
 
