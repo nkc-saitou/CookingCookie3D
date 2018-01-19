@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class BakingTable : MonoBehaviour,IKitchenWare {
 
-    public CookingMaterial mat;
-
     //----------------------------------------------
     // private
     //----------------------------------------------
+
+    CookieBaking createCookie;
 
     //調理進行度
     float checkProgress = 0;
@@ -25,14 +25,21 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
         get; private set;
     }
 
+    public CookingMaterial createDone
+    {
+        get; set;
+    }
+
     // Use this for initialization
     void Start () {
-		
+        createCookie = transform.parent.GetComponent<CookieBaking>();
+        elemLis = new List<CookingMaterial>();
+        createDone = new CookingMaterial();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
+        Debug.Log(checkProgress);
 	}
 
     /// <summary>
@@ -43,12 +50,30 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
     {
         float t = 0;
 
-        while(checkProgress <= 1)
+        CookingRecipe();
+
+        while (checkProgress <= 1)
         {
             yield return null;
             t += Time.deltaTime;
             checkProgress = t / cookingTime;
         }
+        if (checkProgress >= 1.0f) checkProgress = 1.0f;
+    }
+
+    void CookingRecipe()
+    {
+        createDone = null;
+
+        foreach (CookingMaterial mat in createCookie.setCookie)
+        {
+            if (mat.type == elemLis[0].type)
+            {
+                createDone = mat;
+                break;
+            }
+        }
+        elemLis.Clear();
     }
 
     /// <summary>
@@ -81,6 +106,6 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
     public CookingMaterial GetElement()
     {
         if (CheckProgress() != 1) return null;
-        return elemLis[0];
+        return createDone;
     }
 }

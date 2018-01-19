@@ -9,7 +9,7 @@ public enum CookingMaterialType
 {
     Dough = 0, //クッキーの生地
     Jam, //ジャム
-    Choco, //チョコレート
+    Choco, //チョコ
     DarkMatter //ダークマター
 }
 

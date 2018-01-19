@@ -10,11 +10,13 @@ public class KneadTable : MonoBehaviour, IKitchenWare
     // private
     //-----------------------------------------------
 
+    public CookingMaterial[] checkLis;
+
     //レシピ
-    CookingMaterial createCookie = new CookingMaterial();
+    CookieKnead createCookie;
 
     //調理進行度
-    float progress = 1;
+    float progress = 0;
 
     //素材を混ぜることができる数
     int requiredElem = 2;
@@ -27,9 +29,20 @@ public class KneadTable : MonoBehaviour, IKitchenWare
         get; private set;
     }
 
+    public CookingMaterial createDone
+    {
+        get; set;
+    }
+
+
+
     void Start()
     {
+        //リストの初期化
         elemLis = new List<CookingMaterial>();
+        createDone = new CookingMaterial();
+
+        createCookie = transform.parent.GetComponent<CookieKnead>();
 
         //継続的に代入できればいい
         //float a = StartCoroutine(Cooking());
@@ -45,8 +58,10 @@ public class KneadTable : MonoBehaviour, IKitchenWare
     /// </summary>
     void CookingRecipe()
     {
+        createDone = null;
+
         //入れられた素材をJam,Choco,Doughの順に並び替える
-        CookingMaterial[] checkLis = elemLis.OrderBy(m => m.type.ToString().Length).ToArray();
+        checkLis = elemLis.OrderBy(m => m.type.ToString().Length).ThenBy(m => m.type.ToString()).ToArray();
 
         //レシピを判定する
 
@@ -54,24 +69,26 @@ public class KneadTable : MonoBehaviour, IKitchenWare
         //elemLis == {Choco,Dough} →チョコクッキー
         //elemLis == {Dough,Dough} →ノーマルクッキー
 
-        //レシピ通りの場合、2つめの要素は必ずDough
-        if (elemLis[1].type == CookingMaterialType.Dough)
+        foreach (CookingMaterial mat in createCookie.setCookie)
         {
-            //リストの要素を全削除
-            elemLis.Clear();
-
-            //１つ目に入れられた素材でどのレシピかを判別し、クッキーを作る
-            createCookie.type = elemLis[0].type;
-
-            //作ったクッキーをelemLis[0]に保存
-            elemLis.Add(createCookie);
+            //レシピ通りの場合、2つめの要素は必ずDough
+            if (checkLis[1].type == CookingMaterialType.Dough)
+            {
+                //作ったクッキーをelemLis[0]に保存
+                if (mat.type == checkLis[0].type)
+                {
+                    createDone = mat;
+                    break;
+                }
+            }
+            else if(mat.type == CookingMaterialType.DarkMatter) //レシピと違う場合はダークマター
+            {
+                createDone = mat;
+                break;
+            }
         }
-        else //レシピと違う場合はダークマター
-        {
-            elemLis.Clear();
-            createCookie.type = CookingMaterialType.DarkMatter;
-            elemLis.Add(createCookie);
-        }
+        elemLis.Clear();
+        progress = 1;
     }
 
     /// <summary>
@@ -96,7 +113,11 @@ public class KneadTable : MonoBehaviour, IKitchenWare
     public CookingMaterial GetElement()
     {
         if (CheckProgress() != 1) return null;
-        return elemLis[0];
+
+        //Debug.Log(elemLis[0].gameObject);
+
+        progress = 0;
+        return createDone;
     }
 
     /// <summary>
