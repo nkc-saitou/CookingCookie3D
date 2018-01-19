@@ -34,8 +34,6 @@ public class KneadTable : MonoBehaviour, IKitchenWare
         get; set;
     }
 
-
-
     void Start()
     {
         //リストの初期化
@@ -58,8 +56,6 @@ public class KneadTable : MonoBehaviour, IKitchenWare
     /// </summary>
     void CookingRecipe()
     {
-        createDone = null;
-
         //入れられた素材をJam,Choco,Doughの順に並び替える
         checkLis = elemLis.OrderBy(m => m.type.ToString().Length).ThenBy(m => m.type.ToString()).ToArray();
 
@@ -75,19 +71,19 @@ public class KneadTable : MonoBehaviour, IKitchenWare
             if (checkLis[1].type == CookingMaterialType.Dough)
             {
                 //作ったクッキーをelemLis[0]に保存
-                if (mat.type == checkLis[0].type)
+                if (mat.type.ToString() == "Knead_" + checkLis[0].type.ToString())
                 {
                     createDone = mat;
+                    Debug.Log(createDone);
                     break;
                 }
             }
-            else if(mat.type == CookingMaterialType.DarkMatter) //レシピと違う場合はダークマター
+            else if(mat.type == CookingMaterialType.Knead_DarkMatter) //レシピと違う場合はダークマター
             {
                 createDone = mat;
                 break;
             }
         }
-        elemLis.Clear();
         progress = 1;
     }
 
@@ -117,6 +113,7 @@ public class KneadTable : MonoBehaviour, IKitchenWare
         //Debug.Log(elemLis[0].gameObject);
 
         progress = 0;
+        elemLis.Clear();
         return createDone;
     }
 

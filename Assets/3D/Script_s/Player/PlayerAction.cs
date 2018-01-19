@@ -5,7 +5,9 @@ using UnityEngine;
 public class PlayerAction : MonoBehaviour {
 
     IExecutable exe;
-    IKitchenWare kitchenWare;
+    IKitchenWare kit;
+
+    TableKind table;
 
     PlayerSetting set_p;
     GameObject childObj;
@@ -14,12 +16,12 @@ public class PlayerAction : MonoBehaviour {
 
     CookingMaterial childMat;
 
-
-    public CookingMaterial doss;
+    CookingMaterial childType;
 
 	// Use this for initialization
 	void Start ()
     {
+        table = new TableKind();
         childCount = transform.childCount;
         set_p = GetComponent<PlayerSetting>();
 	}
@@ -28,6 +30,7 @@ public class PlayerAction : MonoBehaviour {
 	void Update ()
     {
         HaveCookieManager();
+
     }
 
     /// <summary>
@@ -49,11 +52,14 @@ public class PlayerAction : MonoBehaviour {
         if (transform.childCount >= childCount + 1)
         {
             childObj = transform.GetChild(childCount).gameObject;
+
+            childType = childObj.GetComponent<CookingMaterial>();
         }
         //子オブジェクトを持っていなかったら初期化
         else if (transform.childCount < childCount)
         {
             childObj = null;
+            childType = null;
         }
     }
 
@@ -61,27 +67,104 @@ public class PlayerAction : MonoBehaviour {
     {
         if (Input.GetButtonDown(set_p.keyAction))
         {
-            exe = col.gameObject.GetComponent(typeof(IExecutable)) as IExecutable;
-            kitchenWare = col.gameObject.GetComponent(typeof(IKitchenWare)) as IKitchenWare;
+            table = col.gameObject.GetComponent(typeof(TableKind)) as TableKind;
+            if (table == null) return;
 
-            if (exe != null && kitchenWare == null)
+            exe = col.gameObject.GetComponent(typeof(IExecutable)) as IExecutable;
+            kit = col.gameObject.GetComponent(typeof(IKitchenWare)) as IKitchenWare;
+
+            switch (table.type)
             {
-                SetGet_exe(exe);
+                case TableType.ElemTable:
+
+                    SetGet_exe();
+                    break;
+
+                case TableType.KneadTable:
+
+                    KneadTable knead = new KneadTable();
+                    knead = col.gameObject.GetComponent<KneadTable>();
+
+                    if (knead.elemLis.Count <= 1 && ElemType() && knead.createDone == null)
+                    {
+                        SetGet_kit();
+                        Destroy(childObj);
+
+                    }
+                    else if(knead.createDone != null && HaveChildObj() == false)
+                    {
+                        SetGet_kit();
+                        knead.createDone = null;
+                    }
+
+                    break;
+
+                case TableType.BakingTable:
+
+                    BakingTable bake = new BakingTable();
+                    bake = col.gameObject.GetComponent<BakingTable>();
+
+                    if (KneadType() && bake.createDone == null && bake.elemLis.Count <= 0)
+                    {
+                        SetGet_kit();
+                        Destroy(childObj);
+                    }
+                    else if (bake.createDone != null && HaveChildObj() == false)
+                    {
+                        SetGet_kit();
+                        bake.createDone = null;
+                    }
+
+                    break;
+
+                case TableType.ExitTable:
+                    break;
+
+                case TableType.Table:
+                    break;
             }
-            if (kitchenWare != null)
-            {
-                SetGet_kit(kitchenWare);
-            }
+
+
+
+
+            //if (exe != null && kitchenWare == null)
+            //{
+            //    SetGet_exe(exe);
+            //}
+            //if (kitchenWare != null)
+            //{
+            //    SetGet_kit(kitchenWare);
+            //}
         }
-            exe = null;
-            kitchenWare = null;
+            //exe = null;
+            //kitchenWare = null;
+
+    }
+
+    bool ElemType()
+    {
+        if (childType.type == CookingMaterialType.Dough ||
+            childType.type == CookingMaterialType.Jam ||
+            childType.type == CookingMaterialType.Choco) return true;
+
+        return false;
+    }
+
+    bool KneadType()
+    {
+        if (childType.type == CookingMaterialType.Knead_Dough ||
+            childType.type == CookingMaterialType.Knead_Jam ||
+            childType.type == CookingMaterialType.Knead_Choco ||
+            childType.type == CookingMaterialType.Knead_DarkMatter) return true;
+
+        return false;
     }
 
     /// <summary>
     /// 素材のゲットセット
     /// </summary>
     /// <param name="exe"></param>
-    void SetGet_exe(IExecutable exe)
+    void SetGet_exe()
     {
         if (HaveChildObj() == false)
         {
@@ -94,11 +177,12 @@ public class PlayerAction : MonoBehaviour {
         }
     }
 
-    void SetGet_kit(IKitchenWare kit)
+    void SetGet_kit()
     {
         if (HaveChildObj() == false)
         {
             childMat = kit.GetElement();
+            Debug.Log(childMat.type);
             if (childMat != null) Instantiate(childMat.gameObject, transform);
         }
         else
@@ -106,7 +190,7 @@ public class PlayerAction : MonoBehaviour {
             if (childMat != null)
             {
                 kit.SetElement(childMat);
-                Destroy(childObj);
+                //Destroy(childObj);
                 childMat = null;
             }
         }
@@ -114,7 +198,27 @@ public class PlayerAction : MonoBehaviour {
 
     void OnCollisionExit(Collision col)
     {
-        exe = null;
-        kitchenWare = null;
+        //exe = null;
+        //kitchenWare = null;
+    }
+
+    /// <summary>
+    /// 床に置くときの処理
+    /// </summary>
+    void FloorPut()
+    {
+        // クッキーを持っていなかったら終了
+        if (HaveChildObj() == false) return;
+
+        if (Input.GetButtonUp(set_p.keyAction_2) && childObj != null)
+        {
+            childObj.transform.position = gameObject.transform.position;
+
+            // 親子関係を解除
+            childObj.transform.parent = null;
+
+            // 子オブジェクトを初期化
+            childObj = null;
+        }
     }
 }

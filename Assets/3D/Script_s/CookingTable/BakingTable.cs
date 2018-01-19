@@ -63,17 +63,32 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
 
     void CookingRecipe()
     {
-        createDone = null;
-
         foreach (CookingMaterial mat in createCookie.setCookie)
         {
-            if (mat.type == elemLis[0].type)
+            switch(elemLis[0].type)
             {
-                createDone = mat;
-                break;
+                case CookingMaterialType.Knead_Dough:
+                    if (mat.type == CookingMaterialType.Bake_Dough)
+                        createDone = mat; 
+                    break;
+
+                case CookingMaterialType.Knead_Jam:
+                    if (mat.type == CookingMaterialType.Bake_Jam)
+                        createDone = mat;
+                        break;
+
+                case CookingMaterialType.Knead_Choco:
+                    if (mat.type == CookingMaterialType.Bake_Choco)
+                        createDone = mat;
+                        break;
+
+                case CookingMaterialType.Knead_DarkMatter:
+                    if (mat.type == CookingMaterialType.Bake_DarkMatter)
+                        createDone = mat;
+                    break;
             }
+
         }
-        elemLis.Clear();
     }
 
     /// <summary>
@@ -91,6 +106,7 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
     /// <param name="mat">入れた素材</param>
     public void SetElement(CookingMaterial mat)
     {
+
         elemLis.Add(mat);
 
         if(elemLis.Count == 1)
@@ -106,6 +122,7 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
     public CookingMaterial GetElement()
     {
         if (CheckProgress() != 1) return null;
+        elemLis.Clear();
         return createDone;
     }
 }
