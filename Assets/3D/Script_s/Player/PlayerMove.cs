@@ -8,6 +8,8 @@ public class PlayerMove : MonoBehaviour {
 
     //public GameObject test;
 
+    public bool animWalkFlg { get; set; }
+
     //----------------------------------------------
     // private
     //----------------------------------------------
@@ -53,7 +55,17 @@ public class PlayerMove : MonoBehaviour {
             float step = rotateSpeed * Time.deltaTime;
             Quaternion playerRotate = Quaternion.LookRotation(dir);
             transform.rotation = Quaternion.Lerp(transform.rotation, playerRotate, step);
+
+            //アニメーションの処理↓
+            animWalkFlg = true;
+            Debug.Log("k");
+
         }
+        else
+        {
+            animWalkFlg = false;
+        }
+        //アニメーションの処理↑
 
         rg.velocity = new Vector3(move_x, 0, move_z);
     }
