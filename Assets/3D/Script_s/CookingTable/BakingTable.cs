@@ -2,8 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BakingTable : MonoBehaviour,IKitchenWare {
+
+    public Text test;
 
     //----------------------------------------------
     // private
@@ -13,9 +16,11 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
 
     //調理進行度
     float checkProgress = 0;
-    
+
+    float t = 0;
+
     //調理をする時間
-    int cookingTime = 2;
+    float cookingTime = 2.0f;
 
     /// <summary>
     /// 入れられた素材、作ったクッキーを入れる用のリスト
@@ -39,8 +44,16 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
 	
 	// Update is called once per frame
 	void Update () {
-        Debug.Log(checkProgress);
-	}
+        //Debug.Log(checkProgress);
+        //if (elemLis.Count == 1)
+        //{
+        //    test.text = elemLis[0].ToString();
+        //}
+        //else if (elemLis.Count == 0) test.text = null;
+
+        test.text = CheckProgress().ToString();
+
+    }
 
     /// <summary>
     /// 調理進行度を管理
@@ -48,17 +61,19 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
     /// <returns></returns>
     IEnumerator Cooking()
     {
-        float t = 0;
 
         CookingRecipe();
 
-        while (checkProgress <= 1)
+        while (checkProgress < 1)
         {
             yield return null;
             t += Time.deltaTime;
-            checkProgress = t / cookingTime;
+
+            Debug.Log(t / cookingTime);
+            checkProgress = Mathf.Min(t / cookingTime, 1.0f);
         }
-        if (checkProgress >= 1.0f) checkProgress = 1.0f;
+        t = 0;
+        //if (checkProgress >= 1.0f) checkProgress = 1.0f;
     }
 
     void CookingRecipe()
@@ -87,7 +102,6 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
                         createDone = mat;
                     break;
             }
-
         }
     }
 
@@ -122,7 +136,9 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
     public CookingMaterial GetElement()
     {
         if (CheckProgress() != 1) return null;
+
         elemLis.Clear();
+        checkProgress = 0;
         return createDone;
     }
 }

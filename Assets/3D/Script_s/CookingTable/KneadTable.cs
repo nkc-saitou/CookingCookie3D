@@ -3,20 +3,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.UI;
 
 public class KneadTable : MonoBehaviour, IKitchenWare
 {
+
+    public Text[] testtest;
+
     //-----------------------------------------------
     // private
     //-----------------------------------------------
 
-    public CookingMaterial[] checkLis;
+
+    CookingMaterial[] checkLis;
 
     //レシピ
     CookieKnead createCookie;
 
     //調理進行度
     float progress = 0;
+
+    //調理をする時間
+    float cookingTime = 1.0f;
 
     //素材を混ぜることができる数
     int requiredElem = 2;
@@ -48,7 +56,34 @@ public class KneadTable : MonoBehaviour, IKitchenWare
 
     void Update()
     {
+        if (elemLis.Count == 1) testtest[0].text = elemLis[0].type.ToString();
+        else if (elemLis.Count == 2) testtest[1].text = elemLis[1].type.ToString();
+        else if(elemLis.Count == 0)
+        {
+            testtest[0].text = null;
+            testtest[1].text = null;
+        }
 
+        testtest[2].text = CheckProgress().ToString();
+    }
+
+    /// <summary>
+    /// 調理進行度を管理
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator Cooking()
+    {
+        float t = 0;
+
+        CookingRecipe();
+
+        while (progress < 1)
+        {
+            yield return null;
+            t += Time.deltaTime;
+            progress = Mathf.Min(t / cookingTime, 1.0f);
+        }
+        //if (checkProgress >= 1.0f) checkProgress = 1.0f;
     }
 
     /// <summary>
@@ -84,7 +119,7 @@ public class KneadTable : MonoBehaviour, IKitchenWare
                 break;
             }
         }
-        progress = 1;
+        //elemLis.Clear();
     }
 
     /// <summary>
@@ -95,10 +130,12 @@ public class KneadTable : MonoBehaviour, IKitchenWare
     {
         elemLis.Add(mat);
 
+        progress = 0;
+        Debug.Log("     " + CheckProgress());
         if (elemLis.Count == 2)
         {
             //調理をはじめる
-            CookingRecipe();
+            StartCoroutine(Cooking());
         }
     }
 
@@ -112,8 +149,8 @@ public class KneadTable : MonoBehaviour, IKitchenWare
 
         //Debug.Log(elemLis[0].gameObject);
 
-        progress = 0;
         elemLis.Clear();
+        progress = 0;
         return createDone;
     }
 

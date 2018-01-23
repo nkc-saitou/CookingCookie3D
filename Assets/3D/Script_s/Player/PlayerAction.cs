@@ -1,27 +1,40 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerAction : MonoBehaviour {
 
+    //-------------------------------------------
+    // public
+    //-------------------------------------------
+    public Transform childPos;
+
+    public Text test;
+
+    //-------------------------------------------
+    // private
+    //-------------------------------------------
     IExecutable exe;
     IKitchenWare kit;
 
     TableKind table;
+    BakingTable bake;
 
     PlayerSetting set_p;
+
     GameObject childObj;
 
     int childCount = 0;
 
     CookingMaterial childMat;
 
-    CookingMaterial childType;
-
 	// Use this for initialization
 	void Start ()
     {
         table = new TableKind();
+        bake = new BakingTable();
+
         childCount = transform.childCount;
         set_p = GetComponent<PlayerSetting>();
 	}
@@ -30,7 +43,7 @@ public class PlayerAction : MonoBehaviour {
 	void Update ()
     {
         HaveCookieManager();
-
+        FloorPut();
     }
 
     /// <summary>
@@ -53,13 +66,17 @@ public class PlayerAction : MonoBehaviour {
         {
             childObj = transform.GetChild(childCount).gameObject;
 
-            childType = childObj.GetComponent<CookingMaterial>();
+            childMat = childObj.GetComponent<CookingMaterial>();
+            test.text = childMat.type.ToString();
+
+            childObj.transform.localPosition = childPos.localPosition;
         }
         //子オブジェクトを持っていなかったら初期化
         else if (transform.childCount < childCount)
         {
             childObj = null;
-            childType = null;
+            childMat = null;
+            //test.text = null;
         }
     }
 
@@ -87,13 +104,13 @@ public class PlayerAction : MonoBehaviour {
 
                     if (knead.elemLis.Count <= 1 && ElemType() && knead.createDone == null)
                     {
-                        SetGet_kit();
+                        KneadSetGet_kit();
                         Destroy(childObj);
 
                     }
-                    else if(knead.createDone != null && HaveChildObj() == false)
+                    else if (knead.createDone != null && HaveChildObj() == false && knead.CheckProgress() == 1)
                     {
-                        SetGet_kit();
+                        KneadSetGet_kit();
                         knead.createDone = null;
                     }
 
@@ -101,17 +118,23 @@ public class PlayerAction : MonoBehaviour {
 
                 case TableType.BakingTable:
 
-                    BakingTable bake = new BakingTable();
-                    bake = col.gameObject.GetComponent<BakingTable>();
+                    //BakingTable bake = new BakingTable();
+                    //bake = col.gameObject.GetComponent<BakingTable>();
 
-                    if (KneadType() && bake.createDone == null && bake.elemLis.Count <= 0)
+                    BakingTable bake = col.gameObject.GetComponent<BakingTable>();
+
+                    Debug.Log(bake.elemLis.Count);
+
+                    //入れる
+                    if (KneadType() && bake.elemLis.Count <= 0 && HaveChildObj() && bake.createDone == null)
                     {
-                        SetGet_kit();
+                        OvenSetGet_kit();
                         Destroy(childObj);
                     }
-                    else if (bake.createDone != null && HaveChildObj() == false)
+                    //出す
+                    else if (bake.createDone != null && HaveChildObj() == false && bake.CheckProgress() == 1)
                     {
-                        SetGet_kit();
+                        OvenSetGet_kit();
                         bake.createDone = null;
                     }
 
@@ -123,39 +146,41 @@ public class PlayerAction : MonoBehaviour {
                 case TableType.Table:
                     break;
             }
-
-
-
-
-            //if (exe != null && kitchenWare == null)
-            //{
-            //    SetGet_exe(exe);
-            //}
-            //if (kitchenWare != null)
-            //{
-            //    SetGet_kit(kitchenWare);
-            //}
         }
-            //exe = null;
-            //kitchenWare = null;
-
     }
 
+    void OnTriggerStay(Collider col)
+    {
+        FloorUp(col.gameObject);
+    }
+
+    /// <summary>
+    /// 入れられた素材がテーブルに入れられる素材かどうかを判断
+    /// </summary>
+    /// <returns></returns>
     bool ElemType()
     {
-        if (childType.type == CookingMaterialType.Dough ||
-            childType.type == CookingMaterialType.Jam ||
-            childType.type == CookingMaterialType.Choco) return true;
+        if (childMat == null) return false;
+
+        if (childMat.type == CookingMaterialType.Dough ||
+            childMat.type == CookingMaterialType.Jam ||
+            childMat.type == CookingMaterialType.Choco) return true;
 
         return false;
     }
 
+    /// <summary>
+    /// 入れられた素材がテーブルに入れられる素材かどうかを判断
+    /// </summary>
+    /// <returns></returns>
     bool KneadType()
     {
-        if (childType.type == CookingMaterialType.Knead_Dough ||
-            childType.type == CookingMaterialType.Knead_Jam ||
-            childType.type == CookingMaterialType.Knead_Choco ||
-            childType.type == CookingMaterialType.Knead_DarkMatter) return true;
+        if (childMat == null) return false;
+
+        if (childMat.type == CookingMaterialType.Knead_Dough ||
+            childMat.type == CookingMaterialType.Knead_Jam ||
+            childMat.type == CookingMaterialType.Knead_Choco ||
+            childMat.type == CookingMaterialType.Knead_DarkMatter) return true;
 
         return false;
     }
@@ -177,18 +202,45 @@ public class PlayerAction : MonoBehaviour {
         }
     }
 
-    void SetGet_kit()
+    void OvenSetGet_kit()
     {
         if (HaveChildObj() == false)
         {
             childMat = kit.GetElement();
-            Debug.Log(childMat.type);
-            if (childMat != null) Instantiate(childMat.gameObject, transform);
+            if (childMat != null)
+            {
+                Instantiate(childMat.gameObject, transform);
+                bake.createDone = null;
+                Debug.Log(bake.createDone);
+            }
         }
         else
         {
             if (childMat != null)
             {
+                Debug.Log(childMat);
+                kit.SetElement(childMat);
+                //Destroy(childObj);
+                childMat = null;
+            }
+        }
+    }
+
+    void KneadSetGet_kit()
+    {
+        if (HaveChildObj() == false)
+        {
+            childMat = kit.GetElement();
+            if (childMat != null)
+            {
+                Instantiate(childMat.gameObject, transform);
+            }
+        }
+        else
+        {
+            if (childMat != null)
+            {
+                Debug.Log(childMat);
                 kit.SetElement(childMat);
                 //Destroy(childObj);
                 childMat = null;
@@ -198,8 +250,9 @@ public class PlayerAction : MonoBehaviour {
 
     void OnCollisionExit(Collision col)
     {
-        //exe = null;
-        //kitchenWare = null;
+        table = null;
+        exe = null;
+        kit = null;
     }
 
     /// <summary>
@@ -213,12 +266,32 @@ public class PlayerAction : MonoBehaviour {
         if (Input.GetButtonUp(set_p.keyAction_2) && childObj != null)
         {
             childObj.transform.position = gameObject.transform.position;
+            Vector3 pos = childPos.transform.position;
+            pos.y += 0.3f;
+            childObj.transform.position = pos;
 
             // 親子関係を解除
             childObj.transform.parent = null;
 
             // 子オブジェクトを初期化
             childObj = null;
+        }
+    }
+
+    /// <summary>
+    /// 床に落ちているものを拾う処理
+    /// </summary>
+    /// <param name="col">衝突した物</param>
+    void FloorUp(GameObject col)
+    {
+        CookingMaterial floorMat;
+        floorMat = new CookingMaterial();
+
+        floorMat = col.GetComponent(typeof(CookingMaterial)) as CookingMaterial;
+
+        if(Input.GetButtonUp(set_p.keyAction) && floorMat != null)
+        {
+            col.transform.parent = transform;
         }
     }
 }
