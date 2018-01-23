@@ -16,7 +16,7 @@ public class Prediction : MonoBehaviour {
 	}
     void Update()
     {
-        //不要になったら削除する内容
+        //不要になったら削除
         transform.localScale+=new Vector3(0f,0.003f,0f);
         transform.position -= new Vector3(0f, 0.003f, 0f);
         if (transform.localScale.y >= 1)
@@ -27,7 +27,7 @@ public class Prediction : MonoBehaviour {
 
     void Spawn()
     {
-        Instantiate(enemy,transform.position, Quaternion.identity);
+        Instantiate(enemy,new Vector3(transform.position.x,0,transform.position.z), Quaternion.identity);
         Destroy(gameObject);
         
     }

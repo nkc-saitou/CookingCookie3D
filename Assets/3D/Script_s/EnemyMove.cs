@@ -12,8 +12,10 @@ public class EnemyMove : MonoBehaviour {
     private Vector3 raydirection;
     private Ray ray;
     private RaycastHit rayhit;
-    private int distance=10;
+    private int distance=10;//視認距離
+    private int layerMask = ~(1 << 11);
 
+    private float rotsp = 8;
     // 現在位置
     private Vector3 Position;
     public int _HP = 1;
@@ -24,6 +26,8 @@ public class EnemyMove : MonoBehaviour {
     private float rad;
     //一番近いクッキー
     private GameObject nearestCookie=null;
+    //地雷クッキーがいるか
+    private bool mine=false;
 
     //クッキーに接触しているか
     private bool nearflg = false;
@@ -31,14 +35,11 @@ public class EnemyMove : MonoBehaviour {
     private bool vision;
     //工場入口についたかどうか
     private bool wall = false;
-
-    public GameObject NearestCookie
-    {
-        get { return nearestCookie; }
-        set { nearestCookie = value; }
-    }
+    //壁殴り中しているか
+    private bool wallAtack = true;
 
     void Start () {
+        transform.LookAt(Vector3.zero);
     }
 
     void Update()
@@ -47,6 +48,7 @@ public class EnemyMove : MonoBehaviour {
         {
             movepattern = MovePattern._Death;
         }
+        SearchCookies();
 
         switch (movepattern)
         {
@@ -56,35 +58,21 @@ public class EnemyMove : MonoBehaviour {
                     movepattern = MovePattern._NormalMove;
                     break;
                 }
-                if (nearflg)
+                else if (nearflg)
                 {
                     movepattern = MovePattern._CookieAtack;
                     break;
                 }
-                Vector3 raydirection = (nearestCookie.transform.position - transform.position).normalized;
-                ray = new Ray(transform.position, raydirection);
-                if (Physics.Raycast(ray, out rayhit, distance))
-                {
-                    if (rayhit.collider.tag == "Cookie" || rayhit.collider.tag == "CookieMine")
-                    {
-                        Stalking();
-                        break;
-                    }
-                    else
-                    {
-                        movepattern = MovePattern._NormalMove;
-                        break;
-                    }
-                }
                 Stalking();
                 break;
+
 
             case MovePattern._NormalMove:
                 if (nearestCookie != null)
                 {
                     raydirection = (nearestCookie.transform.position - transform.position).normalized;
                     ray = new Ray(transform.position, raydirection);
-                    if (Physics.Raycast(ray, out rayhit, distance))
+                    if (Physics.Raycast(ray, out rayhit, distance,layerMask))
                     {
                         if (rayhit.collider.tag == "Cookie"||rayhit.collider.tag=="CookieMine")
                         {
@@ -93,7 +81,7 @@ public class EnemyMove : MonoBehaviour {
                         }
                     }
                 }
-                if (wall)
+                else if (wall)
                 {
                     movepattern = MovePattern._Wall;
                     break;
@@ -101,12 +89,13 @@ public class EnemyMove : MonoBehaviour {
                 NormalMove();
                 break;
 
+
             case MovePattern._Wall:
                 if (nearestCookie != null)
                 {
                     raydirection = (nearestCookie.transform.position - transform.position).normalized;
                     ray = new Ray(transform.position, raydirection);
-                    if (Physics.Raycast(ray, out rayhit, distance))
+                    if (Physics.Raycast(ray, out rayhit, distance,layerMask))
                     {
                         if (rayhit.collider.tag == "Cookie" || rayhit.collider.tag == "CookieMine")
                         {
@@ -115,13 +104,14 @@ public class EnemyMove : MonoBehaviour {
                         }
                     }
                 }
-                if (wall == false)
+                else if (wall == false)
                 {
                     movepattern = MovePattern._NormalMove;
                     break;
                 }
                 Wall();
                 break;
+
 
             case MovePattern._CookieAtack:
                 if (nearflg == false)
@@ -132,6 +122,7 @@ public class EnemyMove : MonoBehaviour {
                 CookieAtack();
                 break;
 
+
             case MovePattern._Death:
                 Death();
                 break;
@@ -139,9 +130,51 @@ public class EnemyMove : MonoBehaviour {
 
     }
     
+    //クッキー探査、地雷クッキーが優先される
+    void SearchCookies()
+    {
+        if (GameObject.FindGameObjectWithTag("CookieMine"))
+        {
+            GameObject[] cookiemine = null;
+            cookiemine = GameObject.FindGameObjectsWithTag("CookieMine").
+            OrderBy(e => Vector3.Distance(transform.position, e.transform.position)).ToArray();
+            if ((cookiemine[0].transform.position - transform.position).magnitude <= 12)
+            {
+                nearestCookie = cookiemine[0];
+                mine = true;
+            }
+            else
+            {
+                cookiemine[0] = null;
+                nearestCookie = null;
+                mine = false;
+            }
+        }
+        if (mine == false && GameObject.FindGameObjectWithTag("Cookie"))
+        {
+            GameObject[] cookies = null;
+            cookies = GameObject.FindGameObjectsWithTag("Cookie").
+            OrderBy(e => Vector3.Distance(transform.position, e.transform.position)).ToArray();
+            if ((cookies[0].transform.position - transform.position).magnitude <= 10)
+            {
+                nearestCookie = cookies[0];
+            }
+            else
+            {
+                nearestCookie = null;
+            }
+        }
+    }
+
+
+
+    //クッキーを追跡
     void Stalking()
     {
-            rad = Mathf.Atan2(
+        Vector3 dir = new Vector3(nearestCookie.transform.position.x, transform.position.y, nearestCookie.transform.position.z) - transform.position;
+        Vector3 newdir = Vector3.RotateTowards(transform.forward, dir, rotsp * Time.deltaTime, 0f);
+        transform.rotation = Quaternion.LookRotation(newdir);
+        rad = Mathf.Atan2(
                 nearestCookie.transform.position.z - transform.position.z,
                 nearestCookie.transform.position.x - transform.position.x);
         Position = transform.position;
@@ -150,9 +183,13 @@ public class EnemyMove : MonoBehaviour {
         transform.position = Position;
     }
 
+    //壁(原点)に向かう
     void NormalMove()
     {
-           rad = Mathf.Atan2(
+        Vector3 dir = new Vector3(0,transform.position.y,0) - transform.position;
+        Vector3 newdir = Vector3.RotateTowards(transform.forward, dir, rotsp * Time.deltaTime, 0f);
+        transform.rotation = Quaternion.LookRotation(newdir);
+        rad = Mathf.Atan2(
                0 - transform.position.z,
                0 - transform.position.x);
        Position = transform.position;
@@ -161,21 +198,69 @@ public class EnemyMove : MonoBehaviour {
        transform.position = Position;
     }
 
+    //壁
     void Wall()
     {
-        
+        if (transform.position.x > 17f)
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation,Quaternion.Euler(0,-90,0), Time.deltaTime);
+        }
+        else if (transform.position.x < -17f)
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, 90, 0), Time.deltaTime);
+        }
+        else if (transform.position.z > 9.5f)
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, 180, 0), Time.deltaTime);
+        }
+        else if (transform.position.x < -8f)
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, 0, 0), Time.deltaTime);
+        }
+        else
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(180, 180, 180), Time.deltaTime);
+        }
+        if (wallAtack)
+        {
+
+            wallAtack = false;
+            StartCoroutine("WallAtack");
+        }
     }
 
+    //クッキーを攻撃
     void CookieAtack()
     {
         
     }
 
+    //死亡処理
     void Death()
     {
+        GameObject.FindObjectOfType<ScoreManeger>().GetComponent<ScoreManeger>().Score += 100;
         Destroy(gameObject);
     }
-    void OnTriggerEnter(Collider col)
+
+
+    //壁殴り
+    private IEnumerator WallAtack()
+    {
+        yield return new WaitForSeconds(3f);
+        if (GameObject.FindGameObjectWithTag("FactoryWall"))
+        {
+            GameObject[] wallObject = null;
+            wallObject = GameObject.FindGameObjectsWithTag("FactoryWall").
+            OrderBy(e => Vector3.Distance(transform.position, e.transform.position)).ToArray();
+            wallObject[0].GetComponent<WallHP>()._HP -= 1;
+            wallAtack = true;
+        }
+    }
+
+
+
+
+void OnTriggerEnter(Collider col)
     {
         if (col.tag == "Cookie"||col.tag=="CookieMine")
         {
