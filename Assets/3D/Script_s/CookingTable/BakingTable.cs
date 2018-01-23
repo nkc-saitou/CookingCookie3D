@@ -6,8 +6,6 @@ using UnityEngine.UI;
 
 public class BakingTable : MonoBehaviour,IKitchenWare {
 
-    public Text test;
-
     //----------------------------------------------
     // private
     //----------------------------------------------
@@ -16,8 +14,6 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
 
     //調理進行度
     float checkProgress = 0;
-
-    float t = 0;
 
     //調理をする時間
     float cookingTime = 2.0f;
@@ -44,14 +40,6 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
 	
 	// Update is called once per frame
 	void Update () {
-        //Debug.Log(checkProgress);
-        //if (elemLis.Count == 1)
-        //{
-        //    test.text = elemLis[0].ToString();
-        //}
-        //else if (elemLis.Count == 0) test.text = null;
-
-        test.text = CheckProgress().ToString();
 
     }
 
@@ -61,6 +49,7 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
     /// <returns></returns>
     IEnumerator Cooking()
     {
+        float t = 0;
 
         CookingRecipe();
 
@@ -69,11 +58,8 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
             yield return null;
             t += Time.deltaTime;
 
-            Debug.Log(t / cookingTime);
             checkProgress = Mathf.Min(t / cookingTime, 1.0f);
         }
-        t = 0;
-        //if (checkProgress >= 1.0f) checkProgress = 1.0f;
     }
 
     void CookingRecipe()

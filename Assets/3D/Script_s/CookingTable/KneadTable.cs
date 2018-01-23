@@ -7,13 +7,9 @@ using UnityEngine.UI;
 
 public class KneadTable : MonoBehaviour, IKitchenWare
 {
-
-    public Text[] testtest;
-
     //-----------------------------------------------
     // private
     //-----------------------------------------------
-
 
     CookingMaterial[] checkLis;
 
@@ -56,15 +52,7 @@ public class KneadTable : MonoBehaviour, IKitchenWare
 
     void Update()
     {
-        if (elemLis.Count == 1) testtest[0].text = elemLis[0].type.ToString();
-        else if (elemLis.Count == 2) testtest[1].text = elemLis[1].type.ToString();
-        else if(elemLis.Count == 0)
-        {
-            testtest[0].text = null;
-            testtest[1].text = null;
-        }
 
-        testtest[2].text = CheckProgress().ToString();
     }
 
     /// <summary>
@@ -130,8 +118,6 @@ public class KneadTable : MonoBehaviour, IKitchenWare
     {
         elemLis.Add(mat);
 
-        progress = 0;
-        Debug.Log("     " + CheckProgress());
         if (elemLis.Count == 2)
         {
             //調理をはじめる

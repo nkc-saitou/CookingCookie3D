@@ -10,8 +10,6 @@ public class PlayerAction : MonoBehaviour {
     //-------------------------------------------
     public Transform childPos;
 
-    public Text test;
-
     //-------------------------------------------
     // private
     //-------------------------------------------
@@ -67,17 +65,16 @@ public class PlayerAction : MonoBehaviour {
             childObj = transform.GetChild(childCount).gameObject;
 
             childMat = childObj.GetComponent<CookingMaterial>();
-            test.text = childMat.type.ToString();
 
             childObj.transform.localPosition = childPos.localPosition;
         }
-        //子オブジェクトを持っていなかったら初期化
-        else if (transform.childCount < childCount)
-        {
-            childObj = null;
-            childMat = null;
-            //test.text = null;
-        }
+        ////子オブジェクトを持っていなかったら初期化
+        //else if (transform.childCount < childCount)
+        //{
+        //    childObj = null;
+        //    childMat = null;
+        //    //test.text = null;
+        //}
     }
 
     void OnCollisionStay(Collision col)
@@ -117,9 +114,6 @@ public class PlayerAction : MonoBehaviour {
                     break;
 
                 case TableType.BakingTable:
-
-                    //BakingTable bake = new BakingTable();
-                    //bake = col.gameObject.GetComponent<BakingTable>();
 
                     BakingTable bake = col.gameObject.GetComponent<BakingTable>();
 
@@ -196,10 +190,6 @@ public class PlayerAction : MonoBehaviour {
             childMat = exe.GetElement();
             Instantiate(childMat.gameObject, transform);
         }
-        else
-        {
-
-        }
     }
 
     void OvenSetGet_kit()
@@ -218,9 +208,7 @@ public class PlayerAction : MonoBehaviour {
         {
             if (childMat != null)
             {
-                Debug.Log(childMat);
                 kit.SetElement(childMat);
-                //Destroy(childObj);
                 childMat = null;
             }
         }
@@ -240,9 +228,7 @@ public class PlayerAction : MonoBehaviour {
         {
             if (childMat != null)
             {
-                Debug.Log(childMat);
                 kit.SetElement(childMat);
-                //Destroy(childObj);
                 childMat = null;
             }
         }
