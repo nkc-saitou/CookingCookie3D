@@ -42,7 +42,6 @@ public class KneadTable : MonoBehaviour, IKitchenWare
     {
         //リストの初期化
         elemLis = new List<CookingMaterial>();
-        createDone = new CookingMaterial();
 
         createCookie = transform.parent.GetComponent<CookieKnead>();
 

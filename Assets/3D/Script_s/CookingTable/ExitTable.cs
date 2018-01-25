@@ -21,7 +21,7 @@ public class ExitTable : MonoBehaviour,IExecutable
 
     void Start()
     {
-        soldier = transform.parent.GetComponent<CookieSoldier>();
+
     }
 
     void Update()
@@ -57,6 +57,8 @@ public class ExitTable : MonoBehaviour,IExecutable
             cookieDone = setElem;
 
             CookingMaterial create = Instantiate(cookieDone, exit.transform.position, Quaternion.identity, exit.transform);
+            create.gameObject.AddComponent<SoldierMove>();
+            create.gameObject.GetComponent<BoxCollider>().isTrigger = false;
             create.transform.eulerAngles = new Vector3(xRotate, 0, 0);
 
             Debug.Log("ok");

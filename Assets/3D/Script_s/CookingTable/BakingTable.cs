@@ -39,7 +39,6 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
     void Start () {
         createCookie = transform.parent.GetComponent<CookieBaking>();
         elemLis = new List<CookingMaterial>();
-        createDone = new CookingMaterial();
         anim = GetComponent<Animator>();
 
     }

@@ -295,7 +295,6 @@ public class PlayerAction : MonoBehaviour {
         if (HaveChildObj()) return;
 
         CookingMaterial floorMat;
-        floorMat = new CookingMaterial();
 
         floorMat = col.GetComponent(typeof(CookingMaterial)) as CookingMaterial;
 

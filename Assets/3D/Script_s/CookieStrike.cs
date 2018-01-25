@@ -37,21 +37,21 @@ public class CookieStrike : MonoBehaviour {
                 break;
 
             case MovePattern._Death:
-                Death();
+                //Death();
                 break;
         }
-        if (Vector3.Distance(Vector3.zero, transform.position) > 50)
-        {
-            Destroy(gameObject);
-        }
+        //if (Vector3.Distance(Vector3.zero, transform.position) > 50)
+        //{
+        //    Destroy(gameObject);
+        //}
     }
     void Search()
     {
-        if (GameObject.FindGameObjectWithTag("Enemy"))
+        if (GameObject.FindGameObjectWithTag("E_Chocolate"))
         {
             movepattern = MovePattern._Atack;
             GameObject[] cookies = null;
-            cookies = GameObject.FindGameObjectsWithTag("Enemy").
+            cookies = GameObject.FindGameObjectsWithTag("E_Chocolate").
             OrderBy(e => Vector3.Distance(transform.position, e.transform.position)).ToArray();
             nearestEnemy = cookies[0];
             spot = nearestEnemy.transform.position;

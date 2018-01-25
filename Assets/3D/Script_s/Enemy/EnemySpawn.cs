@@ -52,7 +52,6 @@ public class EnemySpawn : MonoBehaviour {
         StartCoroutine("ESpawn");
 	}
 	
-
 	void Update () {
         if (wallBroken[0] && wallBroken[1] && wallBroken[2] && wallBroken[3])
         {
