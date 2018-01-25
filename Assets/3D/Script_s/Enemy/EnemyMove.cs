@@ -9,6 +9,11 @@ public class EnemyMove : MonoBehaviour {
     public enum MovePattern {_Stalking,_Wall,_NormalMove,_CookieAtack,_Death}
     MovePattern movepattern=MovePattern._NormalMove;
 
+    public enum OpponentType { C_Normal, C_Chocolate, C_Jam }
+    OpponentType opponentType;
+
+    private EnemySpawn ES;
+
     private Vector3 raydirection;
     private Ray ray;
     private RaycastHit rayhit;
@@ -26,8 +31,6 @@ public class EnemyMove : MonoBehaviour {
     private float rad;
     //一番近いクッキー
     private GameObject nearestCookie=null;
-    //地雷クッキーがいるか
-    private bool mine=false;
 
     //クッキーに接触しているか
     private bool nearflg = false;
@@ -38,126 +41,128 @@ public class EnemyMove : MonoBehaviour {
     //壁殴り中しているか
     private bool wallAtack = true;
 
-    void Start () {
+    void Start() {
+        ES = GameObject.Find("EnemySpawn").GetComponent<EnemySpawn>();
         transform.LookAt(Vector3.zero);
+        int RandomType;
+        switch (RandomType = Random.Range(0, 3))
+        {
+            case 0:
+                opponentType = OpponentType.C_Normal;
+                tag = "E_Normal";
+                break;
+            case 1:
+                opponentType = OpponentType.C_Chocolate;
+                tag = "E_Chocolate";
+                break;
+            case 2:
+                opponentType = OpponentType.C_Jam;
+                tag = "E_Jam";
+                break;
+        }
     }
 
     void Update()
     {
-        if (_HP <= 0)
+        if (!ES._Clear)
         {
-            movepattern = MovePattern._Death;
-        }
-        SearchCookies();
+            if (_HP <= 0)
+            {
+                movepattern = MovePattern._Death;
+            }
+            SearchCookies();
 
-        switch (movepattern)
-        {
-            case MovePattern._Stalking:
-                if (nearestCookie == null)
-                {
-                    movepattern = MovePattern._NormalMove;
-                    break;
-                }
-                else if (nearflg)
-                {
-                    movepattern = MovePattern._CookieAtack;
-                    break;
-                }
-                Stalking();
-                break;
-
-
-            case MovePattern._NormalMove:
-                if (nearestCookie != null)
-                {
-                    raydirection = (nearestCookie.transform.position - transform.position).normalized;
-                    ray = new Ray(transform.position, raydirection);
-                    if (Physics.Raycast(ray, out rayhit, distance,layerMask))
+            switch (movepattern)
+            {
+                case MovePattern._Stalking:
+                    if (nearestCookie == null)
                     {
-                        if (rayhit.collider.tag == "Cookie"||rayhit.collider.tag=="CookieMine")
+                        movepattern = MovePattern._NormalMove;
+                        break;
+                    }
+                    else if (nearflg)
+                    {
+                        movepattern = MovePattern._CookieAtack;
+                        break;
+                    }
+                    Stalking();
+                    break;
+
+
+                case MovePattern._NormalMove:
+                    if (nearestCookie != null)
+                    {
+                        raydirection = (nearestCookie.transform.position - transform.position).normalized;
+                        ray = new Ray(transform.position, raydirection);
+                        if (Physics.Raycast(ray, out rayhit, distance, layerMask))
                         {
-                            movepattern = MovePattern._Stalking;
-                            break;
+                            if (rayhit.collider.tag == opponentType.ToString())
+                            {
+                                movepattern = MovePattern._Stalking;
+                                break;
+                            }
                         }
                     }
-                }
-                else if (wall)
-                {
-                    movepattern = MovePattern._Wall;
-                    break;
-                }
-                NormalMove();
-                break;
-
-
-            case MovePattern._Wall:
-                if (nearestCookie != null)
-                {
-                    raydirection = (nearestCookie.transform.position - transform.position).normalized;
-                    ray = new Ray(transform.position, raydirection);
-                    if (Physics.Raycast(ray, out rayhit, distance,layerMask))
+                    else if (wall)
                     {
-                        if (rayhit.collider.tag == "Cookie" || rayhit.collider.tag == "CookieMine")
+                        movepattern = MovePattern._Wall;
+                        break;
+                    }
+                    NormalMove();
+                    break;
+
+
+                case MovePattern._Wall:
+                    if (nearestCookie != null)
+                    {
+                        raydirection = (nearestCookie.transform.position - transform.position).normalized;
+                        ray = new Ray(transform.position, raydirection);
+                        if (Physics.Raycast(ray, out rayhit, distance, layerMask))
                         {
-                            movepattern = MovePattern._Stalking;
-                            break;
+                            if (rayhit.collider.tag == opponentType.ToString())
+                            {
+                                movepattern = MovePattern._Stalking;
+                                break;
+                            }
                         }
                     }
-                }
-                else if (wall == false)
-                {
-                    movepattern = MovePattern._NormalMove;
+                    else if (wall == false)
+                    {
+                        movepattern = MovePattern._NormalMove;
+                        break;
+                    }
+                    Wall();
                     break;
-                }
-                Wall();
-                break;
 
 
-            case MovePattern._CookieAtack:
-                if (nearflg == false)
-                {
-                    movepattern = MovePattern._NormalMove;
+                case MovePattern._CookieAtack:
+                    if (nearflg == false)
+                    {
+                        movepattern = MovePattern._NormalMove;
+                        break;
+                    }
+                    CookieAtack();
                     break;
-                }
-                CookieAtack();
-                break;
 
 
-            case MovePattern._Death:
-                Death();
-                break;
+                case MovePattern._Death:
+                    Death();
+                    break;
+            }
         }
-
     }
     
     //クッキー探査、地雷クッキーが優先される
     void SearchCookies()
     {
-        if (GameObject.FindGameObjectWithTag("CookieMine"))
+        if (GameObject.FindGameObjectWithTag(opponentType.ToString()))
         {
-            GameObject[] cookiemine = null;
-            cookiemine = GameObject.FindGameObjectsWithTag("CookieMine").
+            GameObject[] cookie = null;
+            cookie = GameObject.FindGameObjectsWithTag(opponentType.ToString()).
             OrderBy(e => Vector3.Distance(transform.position, e.transform.position)).ToArray();
-            if ((cookiemine[0].transform.position - transform.position).magnitude <= 12)
+            if ((cookie[0].transform.position - transform.position).magnitude <= 12)
             {
-                nearestCookie = cookiemine[0];
-                mine = true;
-            }
-            else
-            {
-                cookiemine[0] = null;
-                nearestCookie = null;
-                mine = false;
-            }
-        }
-        if (mine == false && GameObject.FindGameObjectWithTag("Cookie"))
-        {
-            GameObject[] cookies = null;
-            cookies = GameObject.FindGameObjectsWithTag("Cookie").
-            OrderBy(e => Vector3.Distance(transform.position, e.transform.position)).ToArray();
-            if ((cookies[0].transform.position - transform.position).magnitude <= 10)
-            {
-                nearestCookie = cookies[0];
+                nearestCookie = cookie[0];
             }
             else
             {
@@ -238,7 +243,8 @@ public class EnemyMove : MonoBehaviour {
     //死亡処理
     void Death()
     {
-        GameObject.FindObjectOfType<ScoreManeger>().GetComponent<ScoreManeger>().Score += 100;
+        GameObject.FindObjectOfType<ScoreManeger>().GetComponent<ScoreManeger>().Score += 10;
+        GameObject.FindObjectOfType<EnemySpawn>().GetComponent<EnemySpawn>().Killed = true;
         Destroy(gameObject);
     }
 
@@ -247,13 +253,16 @@ public class EnemyMove : MonoBehaviour {
     private IEnumerator WallAtack()
     {
         yield return new WaitForSeconds(3f);
-        if (GameObject.FindGameObjectWithTag("FactoryWall"))
+        if (!ES._Clear)
         {
-            GameObject[] wallObject = null;
-            wallObject = GameObject.FindGameObjectsWithTag("FactoryWall").
-            OrderBy(e => Vector3.Distance(transform.position, e.transform.position)).ToArray();
-            wallObject[0].GetComponent<WallHP>()._HP -= 1;
-            wallAtack = true;
+            if (GameObject.FindGameObjectWithTag("FactoryWall"))
+            {
+                GameObject[] wallObject = null;
+                wallObject = GameObject.FindGameObjectsWithTag("FactoryWall").
+                OrderBy(e => Vector3.Distance(transform.position, e.transform.position)).ToArray();
+                wallObject[0].GetComponent<WallHP>()._HP -= 1;
+                wallAtack = true;
+            }
         }
     }
 
@@ -262,7 +271,7 @@ public class EnemyMove : MonoBehaviour {
 
 void OnTriggerEnter(Collider col)
     {
-        if (col.tag == "Cookie"||col.tag=="CookieMine")
+        if (col.tag == opponentType.ToString())
         {
             nearflg = true;
         }
@@ -275,7 +284,7 @@ void OnTriggerEnter(Collider col)
 
     void OnTriggerExit(Collider col)
     {
-        if (col.tag == "Cookie"||col.tag=="CookieMine")
+        if (col.tag == opponentType.ToString())
         {
             nearflg = false;
         }
