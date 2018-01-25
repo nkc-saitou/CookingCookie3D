@@ -17,7 +17,7 @@ public class PlayerMove : MonoBehaviour {
 
     float move_x = 0, move_z = 0; //ｘ、ｙの移動用変数
     float rotateSpeed = 5.0f; //回転スピード
-
+    
     void Start ()
     {
         playerSetting = GetComponent<PlayerSetting>();
@@ -26,14 +26,7 @@ public class PlayerMove : MonoBehaviour {
 
     void Update()
     {
-        //IExecutable exe = test.GetComponent(typeof(IExecutable)) as IExecutable;
-
         Move();
-
-        //CookingMaterial[] checkLis = test.OrderBy(m => m.type.ToString().Length).ToArray();
-
-        //Debug.Log("1  " + checkLis[0].type.ToString());
-        //Debug.Log("2  " + checkLis[1].type.ToString());
     }
 
     //----------------------------------------------

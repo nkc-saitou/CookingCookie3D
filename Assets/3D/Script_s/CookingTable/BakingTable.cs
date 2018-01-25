@@ -10,6 +10,10 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
     // private
     //----------------------------------------------
 
+    public Text text;
+
+    Animator anim;
+
     CookieBaking createCookie;
 
     //調理進行度
@@ -36,10 +40,14 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
         createCookie = transform.parent.GetComponent<CookieBaking>();
         elemLis = new List<CookingMaterial>();
         createDone = new CookingMaterial();
-	}
+        anim = GetComponent<Animator>();
+
+    }
 	
 	// Update is called once per frame
 	void Update () {
+
+        text.text = checkProgress.ToString();
 
     }
 
@@ -52,7 +60,7 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
         float t = 0;
 
         CookingRecipe();
-
+        anim.SetTrigger("OvenStart");
         while (checkProgress < 1)
         {
             yield return null;
@@ -62,6 +70,9 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
         }
     }
 
+    /// <summary>
+    /// 何を作るかの判定
+    /// </summary>
     void CookingRecipe()
     {
         foreach (CookingMaterial mat in createCookie.setCookie)
@@ -106,7 +117,6 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
     /// <param name="mat">入れた素材</param>
     public void SetElement(CookingMaterial mat)
     {
-
         elemLis.Add(mat);
 
         if(elemLis.Count == 1)

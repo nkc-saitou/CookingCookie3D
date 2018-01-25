@@ -103,7 +103,6 @@ public class PlayerAction : MonoBehaviour {
                     {
                         KneadSetGet_kit();
                         Destroy(childObj);
-
                     }
                     else if (knead.createDone != null && HaveChildObj() == false && knead.CheckProgress() == 1)
                     {
@@ -116,8 +115,6 @@ public class PlayerAction : MonoBehaviour {
                 case TableType.BakingTable:
 
                     BakingTable bake = col.gameObject.GetComponent<BakingTable>();
-
-                    Debug.Log(bake.elemLis.Count);
 
                     //入れる
                     if (KneadType() && bake.elemLis.Count <= 0 && HaveChildObj() && bake.createDone == null)
@@ -135,6 +132,15 @@ public class PlayerAction : MonoBehaviour {
                     break;
 
                 case TableType.ExitTable:
+
+                    ExitTable exit = col.gameObject.GetComponent<ExitTable>();
+
+                    if(HaveChildObj() && BakingType(exit))
+                    {
+                        exe.SetElement(childMat);
+                        childMat = null;
+                        Destroy(childObj);
+                    }
                     break;
 
                 case TableType.Table:
@@ -180,6 +186,23 @@ public class PlayerAction : MonoBehaviour {
     }
 
     /// <summary>
+    /// 入れられた素材が出せるクッキーかどうかを判断
+    /// </summary>
+    /// <returns></returns>
+    bool BakingType(ExitTable exit)
+    {
+        if (childMat == null) return false;
+
+        if (exit.Answer.type == childMat.type) return true;
+
+        //if (childMat.type == CookingMaterialType.Bake_Dough ||
+          //  childMat.type == CookingMaterialType.Bake_Jam ||
+            //childMat.type == CookingMaterialType.Bake_Choco) return true;
+
+        return false;
+    }
+
+    /// <summary>
     /// 素材のゲットセット
     /// </summary>
     /// <param name="exe"></param>
@@ -201,7 +224,6 @@ public class PlayerAction : MonoBehaviour {
             {
                 Instantiate(childMat.gameObject, transform);
                 bake.createDone = null;
-                Debug.Log(bake.createDone);
             }
         }
         else
@@ -270,6 +292,8 @@ public class PlayerAction : MonoBehaviour {
     /// <param name="col">衝突した物</param>
     void FloorUp(GameObject col)
     {
+        if (HaveChildObj()) return;
+
         CookingMaterial floorMat;
         floorMat = new CookingMaterial();
 

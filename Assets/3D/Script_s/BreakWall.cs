@@ -31,8 +31,6 @@ public class BreakWall : MonoBehaviour {
                 rg.AddExplosionForce(pow, Vector3.forward, 0f);
                 breakflg = false;
             }
-
         }
-
     }
 }
