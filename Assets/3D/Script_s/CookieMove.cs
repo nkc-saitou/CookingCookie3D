@@ -10,6 +10,9 @@ public class CookieMove : MonoBehaviour {
     public enum MovePattern { _Wait, _Search, _Stalking, _Atack, _Death }
     MovePattern movepattern = MovePattern._Wait;
 
+    public enum CookieType { E_Normal, E_Chocolate, E_Jam }
+    CookieType cookieType;
+
     NavMeshAgent NMA;
 
     //視界に入っているか
@@ -22,7 +25,6 @@ public class CookieMove : MonoBehaviour {
     // 現在位置
     private Vector3 Position;
 
-    public float _HP = 5;
 
     //体当たり速さ
     private Vector3 speed = new Vector3(0.5f, 0f, 0.5f);
@@ -44,15 +46,23 @@ public class CookieMove : MonoBehaviour {
     void Start()
     {
         NMA = GetComponent<NavMeshAgent>();
+        switch (cookieType)
+        {
+            case CookieType.E_Normal:
+                tag = "C_Normal";
+                break;
+            case CookieType.E_Chocolate:
+                tag = "C_Chocolate";
+                break;
+            case CookieType.E_Jam:
+                tag = "C_Jam";
+                break;     
+        }
     }
 
 
     void Update()
     {
-        if (_HP <= 0)
-        {
-            movepattern = MovePattern._Death;
-        }
         SearchEnemy();
         AtackFlag();
 
@@ -68,7 +78,7 @@ public class CookieMove : MonoBehaviour {
 
             case MovePattern._Search:
                 wait = true;
-                if (GameObject.FindGameObjectWithTag("Enemy"))
+                if (GameObject.FindGameObjectWithTag(cookieType.ToString()))
                 {
                     atackarea = false;
                     movepattern = MovePattern._Stalking;
@@ -76,14 +86,14 @@ public class CookieMove : MonoBehaviour {
                     NMA.autoBraking = false;
                     break;
                 }
-                else if (GameObject.FindGameObjectWithTag("Prediction"))
+                /*else if (GameObject.FindGameObjectWithTag("Prediction"))
                 {
                     atackarea = false;
                     movepattern = MovePattern._Stalking;
                     NMA.stoppingDistance = 2f;
                     NMA.autoBraking = false;
                     break;
-                }
+                }*/
                 Search();
                 break;
 
@@ -95,7 +105,7 @@ public class CookieMove : MonoBehaviour {
                     NMA.isStopped = true;
                     break;
                 }
-                if (!GameObject.FindGameObjectWithTag("Enemy")&& !GameObject.FindGameObjectWithTag("Prediction"))
+                if (!GameObject.FindGameObjectWithTag((cookieType.ToString())))
                 {
                     movepattern = MovePattern._Wait;
                     break;
@@ -105,7 +115,7 @@ public class CookieMove : MonoBehaviour {
 
 
             case MovePattern._Atack:
-                if (!GameObject.FindGameObjectWithTag("Enemy"))
+                if (!GameObject.FindGameObjectWithTag((cookieType.ToString())))
                 {
                     movepattern = MovePattern._Wait;
                     break;
@@ -126,10 +136,10 @@ public class CookieMove : MonoBehaviour {
 
     void SearchEnemy()
     {
-        if (GameObject.FindGameObjectWithTag("Enemy"))
+        if (GameObject.FindGameObjectWithTag((cookieType.ToString())))
         {
             GameObject[] cookies = null;
-            cookies = GameObject.FindGameObjectsWithTag("Enemy").
+            cookies = GameObject.FindGameObjectsWithTag((cookieType.ToString())).
             OrderBy(e => Vector3.Distance(transform.position, e.transform.position)).ToArray();
             nearestEnemy = cookies[0];
         }
@@ -150,7 +160,7 @@ public class CookieMove : MonoBehaviour {
             ray = new Ray(transform.position, raydirection);
             if (Physics.Raycast(ray, out rayhit, distance))
             {
-                if (rayhit.collider.tag == "Enemy")
+                if (rayhit.collider.tag == (cookieType.ToString()))
                 {
                     vision = true;
                 }
@@ -216,14 +226,14 @@ public class CookieMove : MonoBehaviour {
 
     void OnTriggerEnter(Collider col)
     {
-        if (col.tag == "Enemy")
+        if (col.tag == (cookieType.ToString()))
         {
-            NMA.isStopped = true;
+            /*NMA.isStopped = true;
             vision = false;
             atackarea = false;
-            movepattern = MovePattern._Wait;
+            movepattern = MovePattern._Wait;*/
             col.GetComponent<EnemyMove>()._HP--;
-            _HP-=0.5f;
+            Death();
         }
     }
 }
