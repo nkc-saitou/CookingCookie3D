@@ -16,6 +16,12 @@ public class KneadTable : MonoBehaviour, IKitchenWare
     //レシピ
     CookieKnead createCookie;
 
+    //表示用のクッキーを出す位置
+    [Header("１つめの素材、２つめの素材、出来たクッキー")]
+    public Transform[] displayPos;
+
+    public GameObject effectPre;
+
     //調理進行度
     float progress = 0;
 
@@ -42,7 +48,6 @@ public class KneadTable : MonoBehaviour, IKitchenWare
     {
         //リストの初期化
         elemLis = new List<CookingMaterial>();
-        createDone = new CookingMaterial();
 
         createCookie = transform.parent.GetComponent<CookieKnead>();
 
@@ -98,12 +103,14 @@ public class KneadTable : MonoBehaviour, IKitchenWare
                 {
                     createDone = mat;
                     Debug.Log(createDone);
+                    DisplayCookie(createDone);
                     break;
                 }
             }
-            else if(mat.type == CookingMaterialType.Knead_DarkMatter) //レシピと違う場合はダークマター
+            else if (mat.type == CookingMaterialType.Knead_DarkMatter) //レシピと違う場合はダークマター
             {
                 createDone = mat;
+                DisplayCookie(mat);
                 break;
             }
         }
@@ -117,6 +124,8 @@ public class KneadTable : MonoBehaviour, IKitchenWare
     public void SetElement(CookingMaterial mat)
     {
         elemLis.Add(mat);
+
+        DisplayElem(mat);
 
         if (elemLis.Count == 2)
         {
@@ -134,9 +143,10 @@ public class KneadTable : MonoBehaviour, IKitchenWare
         if (CheckProgress() != 1) return null;
 
         //Debug.Log(elemLis[0].gameObject);
-
+        DisplayDestroy();
         elemLis.Clear();
         progress = 0;
+        //DisplayDestroy();
         return createDone;
     }
 
@@ -147,5 +157,57 @@ public class KneadTable : MonoBehaviour, IKitchenWare
     public float CheckProgress()
     {
         return progress;
+    }
+
+    /// <summary>
+    /// テーブルに置いたクッキーを見えるようにする
+    /// </summary>
+    /// <param name="mat">素材のtype</param>
+    void DisplayElem(CookingMaterial mat)
+    {
+        //置かれた素材を机の上に配置
+        GameObject display = Instantiate(
+            mat.gameObject,
+            displayPos[elemLis.Count - 1].transform.position,
+            Quaternion.identity,
+            displayPos[elemLis.Count - 1].transform);
+
+        //チョコ以外位置調整
+        if (mat.type != CookingMaterialType.Choco) display.transform.eulerAngles = new Vector3(-90, 0, 0);
+
+    }
+
+    /// <summary>
+    /// 作ったクッキーを机の上に置く
+    /// </summary>
+    /// <param name="mat">作ったクッキーのtype</param>
+    void DisplayCookie(CookingMaterial mat)
+    {
+
+        for (int i = 0; i < displayPos.Length - 1; i++)
+        {
+            Destroy(displayPos[i].gameObject.transform.GetChild(0).gameObject);
+        }
+
+        GameObject effect = Instantiate(effectPre);
+
+        Destroy(effect, 1.0f);
+
+        GameObject displayCookie = Instantiate(
+                mat.gameObject,
+                displayPos[2].transform.position,
+                Quaternion.identity,
+                displayPos[2].transform);
+
+        displayCookie.transform.eulerAngles = new Vector3(-90, 0, 0);
+
+    }
+
+    /// <summary>
+    /// Display用に作ったクッキーを机の上から消す
+    /// </summary>
+    void DisplayDestroy()
+    {
+        Destroy(displayPos[2].transform.GetChild(0).gameObject);
     }
 }

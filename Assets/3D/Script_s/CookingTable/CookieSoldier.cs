@@ -6,5 +6,5 @@ public class CookieSoldier : MonoBehaviour {
 
 
     [Header("クッキー兵士(ノーマル、チョコ、ジャム)")]
-    public CookingMaterial[] setCookie;
+    public GameObject[] setCookie;
 }
