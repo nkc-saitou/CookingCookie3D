@@ -19,7 +19,9 @@ public class EnemySpawn : MonoBehaviour {
 
     private bool clear = false;//クリア
 
-    private bool killed = true;
+    public bool[] killed = { true ,true,true,true};//クッキーがいるか
+
+
     public bool[] wallBroken= { false,false,false,false};//東,南,北,西
 
     private GameObject East;
@@ -30,11 +32,6 @@ public class EnemySpawn : MonoBehaviour {
     public float spawntime=3f;
     public float timer=180;
 
-    public bool Killed
-    {
-        get { return killed; }
-        set { killed = value; }
-    }
 
     public bool _Clear
     {
@@ -72,74 +69,95 @@ public class EnemySpawn : MonoBehaviour {
 
     private void RandomSpawnECookie()
     {
+        //0:東 1:南 2:北 3:西
         if (!clear)
         {
-            RandomPM();
-            Pattern = Random.Range(low, max);
-            switch (Pattern)
+            if (!killed[0] && !killed[1] && !killed[2] && !killed[3]) { }
+            else
             {
-                case 1://上下のクッキーの沸き
-                    if (wallBroken[1] && wallBroken[2])
-                    {
-                        low = 2;
-                        RandomSpawnECookie();
-                        break;
-                    }
-                    if (wallBroken[1]&&!wallBroken[2])
-                    {
-                        a = 1;
-                    }
-                    if (wallBroken[2] && !wallBroken[1])
-                    {
-                        a = -1;
-                    }
-                    GameObject Cookie = (GameObject)Instantiate(prediction, new Vector3(0, 2, 14 * a), Quaternion.identity);
-                    Prediction PD = Cookie.GetComponent<Prediction>();
-                    switch (a)
-                    {
-                        case -1:
-                            Cookie.transform.parent = South.transform;
-                            PD.ParentObject = South;
+                RandomPM();
+                Pattern = Random.Range(low, max);
+                switch (Pattern)
+                {
+                    case 1://上下のクッキーの沸き
+                        if (wallBroken[1] && wallBroken[2] || !killed[1] && !killed[2])
+                        {
+                            low = 2;
+                            RandomSpawnECookie();
                             break;
-                        case 1:
-                            Cookie.transform.parent = Noth.transform;
-                            PD.ParentObject = Noth;
-                            break;
-                    }
+                        }
+                        else if (killed[1] && killed[2])
+                        {
+                            low = 1;
+                        }
+                        if (wallBroken[1] && !wallBroken[2] || !killed[1] && killed[2])
+                        {
+                            a = 1;
+                        }
+                        if (wallBroken[2] && !wallBroken[1] || !killed[2] && killed[1])
+                        {
+                            a = -1;
+                        }
+                        GameObject Cookie = (GameObject)Instantiate(prediction, new Vector3(0, 2, 14 * a), Quaternion.identity);
+                        Prediction PD = Cookie.GetComponent<Prediction>();
+                        switch (a)
+                        {
+                            case -1:
+                                killed[1] = false;
+                                Cookie.transform.parent = South.transform;
+                                PD.ParentObject = South;
+                                PD._Direction = 1;
+                                break;
+                            case 1:
+                                killed[2] = false;
+                                Cookie.transform.parent = Noth.transform;
+                                PD.ParentObject = Noth;
+                                PD._Direction = 2;
+                                break;
+                        }
 
-                    PD.Enemy = Cookie1;
-                    break;
-
-                case 2://左右
-                    if (wallBroken[0] && wallBroken[3])
-                    {
-                        max = 2;
-                        RandomSpawnECookie();
+                        PD.Enemy = Cookie1;
                         break;
-                    }
-                    if (wallBroken[0] && !wallBroken[3])
-                    {
-                        a = -1;
-                    }
-                    if (wallBroken[3] && !wallBroken[0])
-                    {
-                        a = 1;
-                    }
-                    GameObject cooKie = (GameObject)Instantiate(prediction, new Vector3(22 * a, 2, 0), Quaternion.identity);
-                    Prediction _PD = cooKie.GetComponent<Prediction>();
-                    switch (a)
-                    {
-                        case -1:
-                            cooKie.transform.parent = West.transform;
-                            _PD.ParentObject = West;
+
+                    case 2://左右
+                        if (wallBroken[0] && wallBroken[3] || !killed[0] && !killed[3])
+                        {
+                            max = 2;
+                            RandomSpawnECookie();
                             break;
-                        case 1:
-                            cooKie.transform.parent = East.transform;
-                            _PD.ParentObject = East;
-                            break;
-                    }
-                    _PD.Enemy = Cookie1;
-                    break;
+                        }
+                        else if (killed[0] && killed[3])
+                        {
+                            max = 3;
+                        }
+                        if (wallBroken[0] && !wallBroken[3] || !killed[0] && killed[3])
+                        {
+                            a = -1;
+                        }
+                        if (wallBroken[3] && !wallBroken[0] || !killed[3] && killed[0])
+                        {
+                            a = 1;
+                        }
+                        GameObject cooKie = (GameObject)Instantiate(prediction, new Vector3(22 * a, 2, 0), Quaternion.identity);
+                        Prediction _PD = cooKie.GetComponent<Prediction>();
+                        switch (a)
+                        {
+                            case -1:
+                                killed[3] = false;
+                                cooKie.transform.parent = West.transform;
+                                _PD.ParentObject = West;
+                                _PD._Direction = 3;
+                                break;
+                            case 1:
+                                killed[0] = false;
+                                cooKie.transform.parent = East.transform;
+                                _PD.ParentObject = East;
+                                _PD._Direction = 0;
+                                break;
+                        }
+                        _PD.Enemy = Cookie1;
+                        break;
+                }
             }
         }
     }
@@ -149,11 +167,8 @@ public class EnemySpawn : MonoBehaviour {
         while (!clear)
         {
             yield return new WaitForSeconds(spawntime);
-            if (killed)
-            {
-                killed = false;
-                RandomSpawnECookie();
-            }
+            RandomSpawnECookie();
+            
         }
     }
 

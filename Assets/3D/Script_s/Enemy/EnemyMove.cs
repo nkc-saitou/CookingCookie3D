@@ -20,6 +20,8 @@ public class EnemyMove : MonoBehaviour {
     private int distance=10;//視認距離
     private int layerMask = ~(1 << 11);
 
+    private int _direction;        //0:東 1:南 2:北 3:西
+
     private float rotsp = 8;
     // 現在位置
     private Vector3 Position;
@@ -40,6 +42,14 @@ public class EnemyMove : MonoBehaviour {
     private bool wall = false;
     //壁殴り中しているか
     private bool wallAtack = true;
+
+
+
+    public int _Direction
+    {
+        get { return _direction; }
+        set { _direction = value; }
+    }
 
     void Start() {
         ES = GameObject.Find("EnemySpawn").GetComponent<EnemySpawn>();
@@ -244,7 +254,7 @@ public class EnemyMove : MonoBehaviour {
     void Death()
     {
         GameObject.FindObjectOfType<ScoreManeger>().GetComponent<ScoreManeger>().Score += 10;
-        GameObject.FindObjectOfType<EnemySpawn>().GetComponent<EnemySpawn>().Killed = true;
+        GameObject.Find("EnemySpawn").GetComponent<EnemySpawn>().killed[_direction] = true;
         Destroy(gameObject);
     }
 

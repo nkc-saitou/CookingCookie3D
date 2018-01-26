@@ -6,6 +6,7 @@ public class Prediction : MonoBehaviour {
     private GameObject enemy;
     private GameObject obj;
     private GameObject parentObject;
+    private int _direction;
 
     public GameObject Enemy
     {
@@ -16,6 +17,11 @@ public class Prediction : MonoBehaviour {
     {
         get { return parentObject; }
         set { parentObject = value; }
+    }
+    public int _Direction
+    {
+        get { return _direction; }
+        set { _direction = value; }
     }
     void Start () {
         //Invoke("Spawn", 2);
@@ -35,6 +41,7 @@ public class Prediction : MonoBehaviour {
     {
         obj=(GameObject)Instantiate(enemy,new Vector3(transform.position.x,0,transform.position.z), Quaternion.identity);
         obj.transform.parent = parentObject.transform;
+        obj.GetComponent<EnemyMove>()._Direction = _direction;
         Destroy(gameObject);
         
     }
