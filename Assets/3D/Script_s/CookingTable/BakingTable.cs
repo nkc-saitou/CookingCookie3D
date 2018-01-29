@@ -11,6 +11,7 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
     //----------------------------------------------
 
     public Text text;
+    public GameObject hari;
 
     Animator anim;
 
@@ -47,7 +48,7 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
 	void Update () {
 
         text.text = checkProgress.ToString();
-
+        hari.transform.rotation = Quaternion.Euler(hari.transform.rotation.x, hari.transform.rotation.y, (-checkProgress) * 360);
     }
 
     /// <summary>

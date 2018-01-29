@@ -78,7 +78,7 @@ public class EnemyMove : MonoBehaviour {
         {
             if (_HP <= 0)
             {
-                movepattern = MovePattern._Death;
+                //movepattern = MovePattern._Death;
             }
             SearchCookies();
 
@@ -156,7 +156,7 @@ public class EnemyMove : MonoBehaviour {
 
 
                 case MovePattern._Death:
-                    Death();
+                    //Death();
                     break;
             }
         }
@@ -251,7 +251,7 @@ public class EnemyMove : MonoBehaviour {
     }
 
     //死亡処理
-    void Death()
+    public void Death()
     {
         GameObject.FindObjectOfType<ScoreManeger>().GetComponent<ScoreManeger>().Score += 10;
         GameObject.Find("EnemySpawn").GetComponent<EnemySpawn>().killed[_direction] = true;

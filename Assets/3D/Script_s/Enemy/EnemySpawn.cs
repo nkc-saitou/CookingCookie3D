@@ -82,8 +82,9 @@ public class EnemySpawn : MonoBehaviour {
                         if (wallBroken[1] && wallBroken[2] || !killed[1] && !killed[2])
                         {
                             low = 2;
-                            RandomSpawnECookie();
-                            break;
+                            //RandomSpawnECookie();
+                            return;
+                            //break;
                         }
                         else if (killed[1] && killed[2])
                         {
@@ -122,8 +123,9 @@ public class EnemySpawn : MonoBehaviour {
                         if (wallBroken[0] && wallBroken[3] || !killed[0] && !killed[3])
                         {
                             max = 2;
-                            RandomSpawnECookie();
-                            break;
+                            //RandomSpawnECookie();
+                            //break;
+                            return;
                         }
                         else if (killed[0] && killed[3])
                         {

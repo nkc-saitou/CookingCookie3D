@@ -135,11 +135,14 @@ public class PlayerAction : MonoBehaviour {
 
                     ExitTable exit = col.gameObject.GetComponent<ExitTable>();
 
-                    if(HaveChildObj() && BakingType(exit))
+                    if (exit != null || childMat != null)
                     {
-                        exe.SetElement(childMat);
-                        childMat = null;
-                        Destroy(childObj);
+                        if (HaveChildObj() && BakingType(exit))
+                        {
+                            exe.SetElement(childMat);
+                            childMat = null;
+                            Destroy(childObj);
+                        }
                     }
                     break;
 
@@ -191,8 +194,7 @@ public class PlayerAction : MonoBehaviour {
     /// <returns></returns>
     bool BakingType(ExitTable exit)
     {
-        if (childMat == null) return false;
-
+        if (exit.Answer == null || childMat == null) return false;
         if (exit.Answer.type == childMat.type) return true;
 
         //if (childMat.type == CookingMaterialType.Bake_Dough ||

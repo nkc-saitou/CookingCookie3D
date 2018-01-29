@@ -28,9 +28,6 @@ public class KneadTable : MonoBehaviour, IKitchenWare
     //調理をする時間
     float cookingTime = 1.0f;
 
-    //素材を混ぜることができる数
-    int requiredElem = 2;
-
     /// <summary>
     /// 入れた素材を判定するリスト
     /// </summary>
