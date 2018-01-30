@@ -34,7 +34,6 @@ public class EnemyCreate : MonoBehaviour {
 
         if(wallHP.breakFlg == true)
         {
-            Debug.Log("ok");
             //クッキーの生成を止める
             stopCreate = true;
         }
