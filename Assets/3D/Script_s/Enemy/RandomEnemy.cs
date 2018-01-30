@@ -6,6 +6,7 @@ public class RandomEnemy : MonoBehaviour {
 
     [Header("エネミークッキー")]
     public GameObject[] enemyCookie;
+    public int MaxEnemy=50;
 
     public GameObject[] CreateCookie
     {

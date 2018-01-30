@@ -30,9 +30,10 @@ public class EnemyCreate : MonoBehaviour {
 		if(endPoint.transform.childCount == 0 && stopCreate == false)
         {
             Instantiate(rand.CreateCookie[randomNum], gameObject.transform.position, Quaternion.identity, endPoint.transform);
+            rand.MaxEnemy--;
         }
 
-        if(wallHP.breakFlg == true)
+        if (wallHP.breakFlg == true || rand.MaxEnemy<=0)
         {
             //クッキーの生成を止める
             stopCreate = true;
