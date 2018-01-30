@@ -17,8 +17,6 @@ public class Anim : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        Debug.Log(playerMove.animWalkFlg);
-
 		if(playerMove.animWalkFlg)
         {
             GetComponent<Animator>().SetBool("walk", true);

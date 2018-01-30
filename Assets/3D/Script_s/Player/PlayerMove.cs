@@ -51,7 +51,6 @@ public class PlayerMove : MonoBehaviour {
 
             //アニメーションの処理↓
             animWalkFlg = true;
-            Debug.Log("k");
 
         }
         else

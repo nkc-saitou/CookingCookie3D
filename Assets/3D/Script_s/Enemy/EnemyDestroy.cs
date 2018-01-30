@@ -51,7 +51,7 @@ public class EnemyDestroy : MonoBehaviour {
             Destroy(gameObject);
             Destroy(col.gameObject);
 
-            GameObject human = Instantiate(humanPre, transform.position, Quaternion.identity);
+            GameObject human = Instantiate(humanPre, transform.position, Quaternion.identity,transform.parent.transform);
             Destroy(human, 3.0f);
         }
     }

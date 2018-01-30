@@ -41,6 +41,10 @@ public class WallHP : MonoBehaviour {
             Destroy(back);
             Destroy(front);
         }
+        if(_hp > 0)
+        {
+            breakFlg = false;
+        }
 	}
 
     void Broken()
