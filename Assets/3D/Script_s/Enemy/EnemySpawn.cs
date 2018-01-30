@@ -21,7 +21,6 @@ public class EnemySpawn : MonoBehaviour {
 
     public bool[] killed = { true ,true,true,true};//クッキーがいるか
 
-
     public bool[] wallBroken= { false,false,false,false};//東,南,北,西
 
     private GameObject East;
@@ -32,13 +31,11 @@ public class EnemySpawn : MonoBehaviour {
     public float spawntime=3f;
     public float timer=180;
 
-
     public bool _Clear
     {
         get { return clear; }
         set { clear = value; }
     }
-
 
 	void Start () {
         SM = GameObject.FindObjectOfType<ScoreManeger>().GetComponent<ScoreManeger>();
@@ -175,7 +172,6 @@ public class EnemySpawn : MonoBehaviour {
         {
             yield return new WaitForSeconds(spawntime);
             RandomSpawnECookie();
-            
         }
     }
 

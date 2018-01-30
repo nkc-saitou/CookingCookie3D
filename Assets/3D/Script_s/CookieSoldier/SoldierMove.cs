@@ -23,8 +23,5 @@ public class SoldierMove : MonoBehaviour {
             Quaternion.LookRotation(parentObj.transform.localPosition - transform.localPosition), 0.3f);
 
         transform.localPosition += transform.forward * speed;
-
-
-
     }
 }

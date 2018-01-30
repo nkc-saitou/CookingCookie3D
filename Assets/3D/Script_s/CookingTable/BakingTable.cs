@@ -47,7 +47,7 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
 	// Update is called once per frame
 	void Update () {
 
-        text.text = checkProgress.ToString();
+        //text.text = checkProgress.ToString();
         hari.transform.rotation = Quaternion.Euler(hari.transform.rotation.x, hari.transform.rotation.y, (-checkProgress) * 360);
     }
 

@@ -21,7 +21,6 @@ public class RandomEnemy : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         //enemyRand = Random.Range(0, enemyCookie.Length);
-
 	}
 
 

@@ -10,6 +10,8 @@ public class ExitTable : MonoBehaviour,IExecutable
     CookingMaterial cookieDone; //出すクッキー
     CookingMaterial setElem; //作ったクッキー
 
+    public WallHP wallHP;
+
     //答えのクッキーの親オブジェクト
     public GameObject exit;
 
@@ -50,7 +52,7 @@ public class ExitTable : MonoBehaviour,IExecutable
 
     void CookieRecipe()
     {
-        if(Answer.type == setElem.type)
+        if(Answer.type == setElem.type && wallHP.breakFlg == false)
         {
             float xRotate = -90.0f;
 
@@ -61,7 +63,6 @@ public class ExitTable : MonoBehaviour,IExecutable
             create.gameObject.GetComponent<BoxCollider>().isTrigger = false;
             create.transform.eulerAngles = new Vector3(xRotate, 0, 0);
 
-            Debug.Log("ok");
             setElem = null;
         }
     }
