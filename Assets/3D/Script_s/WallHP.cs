@@ -20,7 +20,10 @@ public class WallHP : MonoBehaviour {
         set
         {
             _hp = value;
-            front.fillAmount =_hp/MaxHp;
+            if (breakFlg == false)
+            {
+                front.fillAmount = _hp / MaxHp;
+            }
         }
     }
 
