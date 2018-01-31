@@ -9,6 +9,7 @@ public class TitleMovieScene : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        AudioManager.Instance.PlayBGM("movie");
     }
 
     // Update is called once per frame
