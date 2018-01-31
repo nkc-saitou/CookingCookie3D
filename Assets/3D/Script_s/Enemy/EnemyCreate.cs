@@ -6,6 +6,8 @@ public class EnemyCreate : MonoBehaviour {
 
     RandomEnemy rand;
 
+    NumberofEnemy numEnemy;
+
     public GameObject endPoint;
 
     public WallHP wallHP;
@@ -16,7 +18,8 @@ public class EnemyCreate : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-       rand = transform.parent.GetComponent<RandomEnemy>();
+        rand = transform.parent.GetComponent<RandomEnemy>();
+        numEnemy = GameObject.FindObjectOfType<NumberofEnemy>().GetComponent<NumberofEnemy>();
 	}
 	
 	// Update is called once per frame
@@ -31,6 +34,7 @@ public class EnemyCreate : MonoBehaviour {
         {
             Instantiate(rand.CreateCookie[randomNum], gameObject.transform.position, Quaternion.identity, endPoint.transform);
             rand.MaxEnemy--;
+            numEnemy.NumberEnemy++;
         }
 
         if (wallHP.breakFlg == true || rand.MaxEnemy<=0)

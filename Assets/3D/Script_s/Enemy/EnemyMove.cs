@@ -256,6 +256,7 @@ public class EnemyMove : MonoBehaviour {
         //GameObject.FindObjectOfType<ScoreManeger>().GetComponent<ScoreManeger>().Score += 10;
         //GameObject.Find("EnemySpawn").GetComponent<EnemySpawn>().killed[_direction] = true;
         GameObject.Find("CreatePos").GetComponent<RandomEnemy>().MaxEnemy--;
+        GameObject.FindObjectOfType<NumberofEnemy>().GetComponent<NumberofEnemy>().NumberEnemy--;
         Destroy(gameObject);
     }
 
