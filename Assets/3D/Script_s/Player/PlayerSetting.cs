@@ -2,6 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// プレイヤーのエントリーナンバー
+/// </summary>
+public enum PlayerNumber
+{
+    One = 0,
+    Two,
+    Three,
+    Four
+}
+
 [RequireComponent(typeof(PlayerMove))]
 public class PlayerSetting : MonoBehaviour {
 
@@ -33,12 +44,6 @@ public class PlayerSetting : MonoBehaviour {
     //----------------------------------------------------
     // 列挙型
     //----------------------------------------------------
-
-    public enum PlayerNumber
-    {
-        One = 0,
-        Two
-    }
 
     public PlayerNumber playerNumber;
 
@@ -83,6 +88,14 @@ public class PlayerSetting : MonoBehaviour {
 
             case PlayerNumber.Two:
                 playerNum = 2;
+                break;
+
+            case PlayerNumber.Three:
+                playerNum = 3;
+                break;
+
+            case PlayerNumber.Four:
+                playerNum = 4;
                 break;
         }
     }
