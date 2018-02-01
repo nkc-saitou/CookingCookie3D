@@ -28,7 +28,7 @@ public class PlayerMove : MonoBehaviour {
 
     void Update()
     {
-        Move();
+        if(PlayerMoveSetting.Instance.MoveSettingFlg) Move();
     }
 
     //----------------------------------------------

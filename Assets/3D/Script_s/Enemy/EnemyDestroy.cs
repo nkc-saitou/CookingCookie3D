@@ -8,6 +8,7 @@ public class EnemyDestroy : MonoBehaviour {
     CookingMaterial cookieType;
 
     EnemyMove enemyMove;
+    //public EnemyDeath death;
 
     bool flg = true;
 
@@ -22,7 +23,7 @@ public class EnemyDestroy : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+
 	}
 
     void OnCollisionStay(Collision col)
@@ -32,7 +33,6 @@ public class EnemyDestroy : MonoBehaviour {
 
     IEnumerator DestroyCookie(GameObject col)
     {
-
 
         cookieType = col.GetComponent<CookingMaterial>();
 
@@ -47,9 +47,13 @@ public class EnemyDestroy : MonoBehaviour {
 
             Destroy(effect,1.0f);
 
+            Debug.Log(col);
+
+            EnemyDeath._EnemyDeath -= 1;
+
             enemyMove.Death();
-            Destroy(gameObject);
             Destroy(col.gameObject);
+            Destroy(gameObject);
 
             GameObject human = Instantiate(humanPre, transform.position, Quaternion.identity,transform.parent.transform);
             Destroy(human, 3.0f);

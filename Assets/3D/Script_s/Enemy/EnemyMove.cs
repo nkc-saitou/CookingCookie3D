@@ -44,7 +44,6 @@ public class EnemyMove : MonoBehaviour {
     private bool wallAtack = true;
 
 
-
     public int _Direction
     {
         get { return _direction; }
@@ -255,7 +254,7 @@ public class EnemyMove : MonoBehaviour {
     {
         //GameObject.FindObjectOfType<ScoreManeger>().GetComponent<ScoreManeger>().Score += 10;
         //GameObject.Find("EnemySpawn").GetComponent<EnemySpawn>().killed[_direction] = true;
-        GameObject.FindObjectOfType<NumberofEnemy>().GetComponent<NumberofEnemy>().EnemyNumber--;
+        //GameObject.FindObjectOfType<NumberofEnemy>().GetComponent<NumberofEnemy>().EnemyNumber--;
         Destroy(gameObject);
     }
 

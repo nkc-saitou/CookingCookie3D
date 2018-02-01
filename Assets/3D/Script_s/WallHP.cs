@@ -10,6 +10,8 @@ public class WallHP : MonoBehaviour {
     public Image back;
     public Image front;
 
+    float score;
+
     //0:東  1:南  2:北  3:西
     [Header("0:東  1:南  2:北  3:西")]
     public int direction;
@@ -27,6 +29,12 @@ public class WallHP : MonoBehaviour {
         }
     }
 
+    public float _ScoreHP
+    {
+        get { return score; }
+        set { score = value; }
+    }
+
     public bool breakFlg
     {
         get; set;
@@ -38,17 +46,24 @@ public class WallHP : MonoBehaviour {
 	
 	void Update () {
 
+
+	}
+
+    void FixedUpdate()
+    {
+        score = _hp / MaxHp;
+        //Debug.Log(score);
         if (_hp <= 0)
         {
             Broken();
             Destroy(back);
             Destroy(front);
         }
-        if(_hp > 0)
+        if (_hp > 0)
         {
             breakFlg = false;
         }
-	}
+    }
 
     void Broken()
     {

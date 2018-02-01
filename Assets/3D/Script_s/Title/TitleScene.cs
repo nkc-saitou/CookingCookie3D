@@ -20,11 +20,8 @@ public class TitleScene : MonoBehaviour {
 	
 
 	void Update () {
-        if (Input.GetButtonDown("JoyStick_Action1"))
-        {
-            fadeIN.SetActive(true);
-            StartCoroutine(WaitFadeIn());
-        }
+
+        StartCoroutine(TitleWait());
 	}
 
     /// <summary>
@@ -45,5 +42,16 @@ public class TitleScene : MonoBehaviour {
     {
         yield return new WaitForSeconds(2.5f);
         fadeOut.SetActive(false);
+    }
+
+    IEnumerator TitleWait()
+    {
+        yield return new WaitForSeconds(1.5f);
+
+        if (Input.GetButtonDown("JoyStick_Action1"))
+        {
+            fadeIN.SetActive(true);
+            StartCoroutine(WaitFadeIn());
+        }
     }
 }

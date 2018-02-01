@@ -6,8 +6,15 @@ public class RandomEnemy : MonoBehaviour {
 
     [Header("エネミークッキー")]
     public GameObject[] enemyCookie;
-    //public int MaxEnemy=50;
+
+    ////public int MaxEnemy=50;
     public int createEnemy = 50;
+
+    public int CreateEnemy
+    {
+        get { return createEnemy; }
+        set { createEnemy = value; }
+    }
 
     public GameObject[] CreateCookie
     {
@@ -24,6 +31,4 @@ public class RandomEnemy : MonoBehaviour {
 	void Update () {
         //enemyRand = Random.Range(0, enemyCookie.Length);
 	}
-
-
 }

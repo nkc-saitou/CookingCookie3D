@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// プレイヤーのエントリーナンバー
@@ -41,6 +42,8 @@ public class PlayerSetting : MonoBehaviour {
     [System.NonSerialized]
     public string keyAction_2;
 
+    public Transform StartPos;
+
     //----------------------------------------------------
     // 列挙型
     //----------------------------------------------------
@@ -51,6 +54,14 @@ public class PlayerSetting : MonoBehaviour {
     {
         GamePlayers();
         KeySetting();
+
+        SceneManager.activeSceneChanged += OnActiveSceneChanged;
+    }
+
+    void OnActiveSceneChanged(Scene prevScene, Scene nextScene)
+    {
+        transform.position = StartPos.position;
+        transform.rotation = Quaternion.identity;
     }
 
     //-----------------------------------

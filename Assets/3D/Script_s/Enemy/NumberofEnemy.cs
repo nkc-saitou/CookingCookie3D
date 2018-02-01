@@ -4,7 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class NumberofEnemy : MonoBehaviour {
-    private int _enemynumber = 50;
+    private int _enemynumber = 4;
+
+    public RandomEnemy random;
     public Sprite[] numimage;
     public List<int> number = new List<int>();
 
@@ -51,6 +53,7 @@ public class NumberofEnemy : MonoBehaviour {
 
     void Start()
     {
+        //_enemynumber = random.CreateEnemy;
         View(_enemynumber);
     }
 
