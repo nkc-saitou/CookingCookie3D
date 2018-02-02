@@ -68,6 +68,8 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
 
             checkProgress = Mathf.Min(t / cookingTime, 1.0f);
         }
+
+        if (checkProgress == 1) AudioManager.Instance.PlaySE("Oven");
     }
 
     /// <summary>

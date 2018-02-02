@@ -11,7 +11,8 @@ public enum PlayerNumber
     One = 0,
     Two,
     Three,
-    Four
+    Four,
+    KeyOne
 }
 
 [RequireComponent(typeof(PlayerMove))]
@@ -24,8 +25,9 @@ public class PlayerSetting : MonoBehaviour {
     [SerializeField, Header("移動速度"), Range(0, 10)]
     public float speed = 3.0f;
 
-    [SerializeField, Header("ゲームパッドでプレイするか")]
-    public bool playIsGamePad = false;
+    //[SerializeField, Header("ゲームパッドでプレイするか")]
+    //ゲームパッドかどうか
+    bool playIsGamePad = false;
 
     [System.NonSerialized]
     public int playerNum;
@@ -60,8 +62,8 @@ public class PlayerSetting : MonoBehaviour {
 
     void OnActiveSceneChanged(Scene prevScene, Scene nextScene)
     {
-        transform.position = StartPos.position;
-        transform.rotation = Quaternion.identity;
+        //transform.position = StartPos.position;
+        //transform.rotation = Quaternion.identity;
     }
 
     //-----------------------------------
@@ -94,19 +96,28 @@ public class PlayerSetting : MonoBehaviour {
         switch (playerNumber)
         {
             case PlayerNumber.One:
+                playIsGamePad = true;
                 playerNum = 1;
                 break;
 
             case PlayerNumber.Two:
+                playIsGamePad = true;
                 playerNum = 2;
                 break;
 
             case PlayerNumber.Three:
+                playIsGamePad = true;
                 playerNum = 3;
                 break;
 
             case PlayerNumber.Four:
+                playIsGamePad = true;
                 playerNum = 4;
+                break;
+
+            case PlayerNumber.KeyOne:
+                playIsGamePad = false;
+                playerNum = 1;
                 break;
         }
     }

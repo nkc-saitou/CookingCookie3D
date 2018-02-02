@@ -37,6 +37,7 @@ public class StageSelect : MonoBehaviour {
         }
         if (Input.GetButtonDown("JoyStick_Action1"))
         {
+            AudioManager.Instance.PlaySE("Button");
             fadeIN.SetActive(true);
             StartCoroutine(WaitFadeIn(sceneName));
         }

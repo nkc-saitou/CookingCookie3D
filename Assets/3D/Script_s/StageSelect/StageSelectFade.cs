@@ -10,6 +10,7 @@ public class StageSelectFade : MonoBehaviour {
 
     void Start()
     {
+        AudioManager.Instance.PlayBGM("stageSelect");
         fadeOut.SetActive(true);
         StartCoroutine(WaitFadeOut());
     }

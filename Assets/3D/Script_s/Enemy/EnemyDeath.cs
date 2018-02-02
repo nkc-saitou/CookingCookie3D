@@ -8,6 +8,9 @@ public class EnemyDeath : MonoBehaviour {
     [Header("エネミーを倒す数")]
     public int enemyDeath;
 
+    [Header("エネミーの数表示用テキスト")]
+    public Text deathText;
+
     int maxScore = 1000;
 
     public Text ScoreText;
@@ -51,13 +54,14 @@ public class EnemyDeath : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-
+        deathText.text = _EnemyDeath.ToString();
     }
 
     void FixedUpdate()
     {
         if (_EnemyDeath == 0 && first == false)
         {
+            AudioManager.Instance.PlaySE("Final");
             first = true;
             for (int i = 0; i < wallHP.Length; i++)
             {
@@ -71,8 +75,10 @@ public class EnemyDeath : MonoBehaviour {
             Debug.Log(ScoreManagerS.Instance.Score); 
         }
 
-        if(WallBreak())
+        if(WallBreak() && first == false)
         {
+            first = true;
+            AudioManager.Instance.PlaySE("Final");
             PlayerMoveSetting.Instance.MoveSettingFlg = false;
             gameOverImg.SetActive(true);
             gameOverUIImg.SetActive(true);

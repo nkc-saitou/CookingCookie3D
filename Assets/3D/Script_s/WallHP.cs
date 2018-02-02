@@ -10,6 +10,8 @@ public class WallHP : MonoBehaviour {
     public Image back;
     public Image front;
 
+    bool flg = true;
+
     float score;
 
     //0:東  1:南  2:北  3:西
@@ -42,6 +44,7 @@ public class WallHP : MonoBehaviour {
 
 	void Start () {
         breakFlg = false;
+        
     }
 	
 	void Update () {
@@ -58,6 +61,11 @@ public class WallHP : MonoBehaviour {
             Broken();
             Destroy(back);
             Destroy(front);
+            if (flg)
+            {
+                AudioManager.Instance.PlaySE("BreakWall");
+                flg = false;
+            }
         }
         if (_hp > 0)
         {

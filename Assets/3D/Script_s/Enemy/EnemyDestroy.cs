@@ -42,7 +42,7 @@ public class EnemyDestroy : MonoBehaviour {
         if (cookieType.type == enemyType.type && flg)
         {
             flg = false;
-
+            AudioManager.Instance.PlaySE("EnemyDown");
             GameObject effect = Instantiate(effectPre,transform.position,Quaternion.identity, transform.parent);
 
             Destroy(effect,1.0f);

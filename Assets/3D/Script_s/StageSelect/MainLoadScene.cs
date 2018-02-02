@@ -24,18 +24,21 @@ public class MainLoadScene : MonoBehaviour {
     {
         sceneName = "Main";
         StartCoroutine(WaitFadeIn(sceneName));
+        PlayerMoveSetting.Instance.filst = true;
     }
 
     public void OnStageSelectButton()
     {
         sceneName = "StageSelect";
         StartCoroutine(WaitFadeIn(sceneName));
+        PlayerMoveSetting.Instance.playerCount = 0;
     }
 
     public void OnTitleButton()
     {
         sceneName = "Title";
         StartCoroutine(WaitFadeIn(sceneName));
+        PlayerMoveSetting.Instance.playerCount = 0;
     }
 
 

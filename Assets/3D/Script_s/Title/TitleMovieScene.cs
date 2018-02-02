@@ -9,7 +9,7 @@ public class TitleMovieScene : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        AudioManager.Instance.PlayBGM("starWars");
+        AudioManager.Instance.PlayBGM("movie");
     }
 
     // Update is called once per frame
@@ -20,6 +20,7 @@ public class TitleMovieScene : MonoBehaviour {
 
         if (Input.GetButtonDown("JoyStick_Action1"))
         {
+            AudioManager.Instance.PlaySE("Button");
             FadeManager.Instance.LoadScene("Title", 0.1f);
         }
         //animの再生が終わっているかどうか

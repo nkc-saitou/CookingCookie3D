@@ -19,7 +19,10 @@ public class BreakWall : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (wallHP.breakFlg == true) Break();
+        if (wallHP.breakFlg == true)
+        {
+            Break();
+        }
 	}
 
     void Break()
