@@ -50,7 +50,6 @@ public class PlayerMoveSetting : SingletonMonoBehaviour<PlayerMoveSetting>
         parentObj = GameObject.FindGameObjectWithTag("PlayerController");
         nowScene = SceneManager.GetActiveScene().name;
 
-        Debug.Log(playerCount);
         //Debug.Log(filst);
 
         if (nowScene == "StageSelect")

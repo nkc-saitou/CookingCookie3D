@@ -12,6 +12,8 @@ public class TitleScene : MonoBehaviour {
     [Header("違うシーンから遷移してきたとき")]
     public GameObject fadeOut;
 
+    bool filst = true;
+
     void Start () {
         fadeOut.SetActive(true);
         StartCoroutine(WaitFadeOut());
@@ -20,7 +22,6 @@ public class TitleScene : MonoBehaviour {
 	
 
 	void Update () {
-
         StartCoroutine(TitleWait());
 	}
 
@@ -48,11 +49,12 @@ public class TitleScene : MonoBehaviour {
     {
         yield return new WaitForSeconds(1.5f);
 
-        if (Input.GetButtonDown("JoyStick_Action1"))
+        if (Input.GetButtonDown("JoyStick_Action1") && filst)
         {
             AudioManager.Instance.PlaySE("Button");
             fadeIN.SetActive(true);
             StartCoroutine(WaitFadeIn());
+            filst = false;
         }
     }
 }

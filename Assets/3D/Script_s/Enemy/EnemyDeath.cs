@@ -72,7 +72,6 @@ public class EnemyDeath : MonoBehaviour {
 
             //ScoreText.text = ScoreManagerS.Instance.Score.ToString();
 
-            Debug.Log(ScoreManagerS.Instance.Score); 
         }
 
         if(WallBreak() && first == false)
@@ -116,6 +115,4 @@ public class EnemyDeath : MonoBehaviour {
         yield return new WaitForSeconds(1.2f);
         fadeOut.SetActive(false);
     }
-
-
 }

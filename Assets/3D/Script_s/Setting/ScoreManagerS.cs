@@ -77,7 +77,14 @@ public class ScoreManagerS: SingletonMonoBehaviour<ScoreManagerS> {
 		
 	}
 
-    // スコアをアニメーションさせる
+    /// <summary>
+    /// スコアをアニメーションさせる
+    /// </summary>
+    /// <param name="startScore">始めのスコア</param>
+    /// <param name="endScore">最終的なスコア</param>
+    /// <param name="duration">最終的なスコアがでるまでの時間</param>
+    /// <param name="scoreText">表示するテキスト</param>
+    /// <returns></returns>
     public IEnumerator ScoreAnimation(float startScore, float endScore, float duration,Text scoreText)
     {
         // 開始時間

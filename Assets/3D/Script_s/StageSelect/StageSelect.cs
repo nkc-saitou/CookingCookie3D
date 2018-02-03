@@ -15,6 +15,8 @@ public class StageSelect : MonoBehaviour {
 
     string sceneName;
 
+    bool filst = true;
+
     [Header("次のシーンに遷移するとき")]
     public GameObject fadeIN;
 
@@ -35,8 +37,9 @@ public class StageSelect : MonoBehaviour {
                 sceneName = "Main";
                 break;
         }
-        if (Input.GetButtonDown("JoyStick_Action1"))
+        if (Input.GetButtonDown("JoyStick_Action1") && filst)
         {
+            filst = false;
             AudioManager.Instance.PlaySE("Button");
             fadeIN.SetActive(true);
             StartCoroutine(WaitFadeIn(sceneName));
