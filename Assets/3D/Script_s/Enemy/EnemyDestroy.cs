@@ -51,7 +51,7 @@ public class EnemyDestroy : MonoBehaviour {
 
             EnemyDeath._EnemyDeath -= 1;
 
-            enemyMove.Death();
+            //enemyMove.Death();
             Destroy(col.gameObject);
             Destroy(gameObject);
 

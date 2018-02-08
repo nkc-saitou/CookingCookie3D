@@ -186,7 +186,7 @@ public class KneadTable : MonoBehaviour, IKitchenWare
             Destroy(displayPos[i].gameObject.transform.GetChild(0).gameObject);
         }
 
-        GameObject effect = Instantiate(effectPre);
+        GameObject effect = Instantiate(effectPre,transform);
         AudioManager.Instance.PlaySE("Knead");
 
         Destroy(effect, 1.0f);

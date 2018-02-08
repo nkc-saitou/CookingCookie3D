@@ -15,6 +15,7 @@ public class EnemyCreate : MonoBehaviour {
     int randomNum;
 
     bool stopCreate = false;
+    bool createFilst = true;
 
     // Use this for initialization
     void Start () {
@@ -32,10 +33,12 @@ public class EnemyCreate : MonoBehaviour {
     {
         randomNum = Random.Range(0, rand.CreateCookie.Length);
 
-        if (endPoint.transform.childCount == 0 && stopCreate == false)
+        if (endPoint.transform.childCount == 0 && stopCreate == false && createFilst)
         {
-            Instantiate(rand.CreateCookie[randomNum], gameObject.transform.position, Quaternion.identity, endPoint.transform);
+            createFilst = false;
+            //Instantiate(rand.CreateCookie[randomNum], gameObject.transform.position, Quaternion.identity, endPoint.transform);
             //rand.createEnemy--;
+            StartCoroutine(waitTime());
         }
 
         if (wallHP.breakFlg == true || rand.createEnemy <= 0 || EnemyDeath._EnemyDeath <= 0)
@@ -43,10 +46,22 @@ public class EnemyCreate : MonoBehaviour {
             //クッキーの生成を止める
             stopCreate = true;
 
-            if (endPoint.transform.childCount != 0)
+            if(endPoint.transform.childCount != 0)
             {
-                Destroy(endPoint.transform.GetChild(0).gameObject, 3.0f);
+                endPoint.transform.GetChild(0).gameObject.transform.parent = null;
             }
+
+            //if (endPoint.transform.childCount != 0)
+            //{
+            //    Destroy(endPoint.transform.GetChild(0).gameObject, 3.0f);
+            //}
         }
+    }
+
+    IEnumerator waitTime()
+    {
+        yield return new WaitForSeconds(0.5f);
+        Instantiate(rand.CreateCookie[randomNum], gameObject.transform.position, Quaternion.identity, endPoint.transform);
+        createFilst = true;
     }
 }

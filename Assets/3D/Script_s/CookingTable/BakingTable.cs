@@ -10,8 +10,10 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
     // private
     //----------------------------------------------
 
-    public Text text;
     public GameObject hari;
+    public GameObject createDisplayPos;
+
+    GameObject createDisplay;
 
     Animator anim;
 
@@ -41,7 +43,6 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
         createCookie = transform.parent.GetComponent<CookieBaking>();
         elemLis = new List<CookingMaterial>();
         anim = GetComponent<Animator>();
-
     }
 	
 	// Update is called once per frame
@@ -49,6 +50,8 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
 
         //text.text = checkProgress.ToString();
         hari.transform.rotation = Quaternion.Euler(hari.transform.rotation.x, hari.transform.rotation.y, (-checkProgress) * 360);
+
+        if (CheckProgress() != 1 && createDisplay != null) Destroy(createDisplay);
     }
 
     /// <summary>
@@ -69,7 +72,15 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
             checkProgress = Mathf.Min(t / cookingTime, 1.0f);
         }
 
-        if (checkProgress == 1) AudioManager.Instance.PlaySE("Oven");
+        if (checkProgress == 1)
+        {
+            GameObject createDis = createDone.gameObject;
+
+            yield return new WaitForSeconds(0.3f);
+            createDisplay = Instantiate(createDis, createDisplayPos.transform.position,Quaternion.identity,createDisplayPos.transform);
+            createDisplay.transform.rotation = Quaternion.Euler(-90, 0, 0);
+            AudioManager.Instance.PlaySE("Oven");
+        }
     }
 
     /// <summary>
@@ -137,6 +148,7 @@ public class BakingTable : MonoBehaviour,IKitchenWare {
 
         elemLis.Clear();
         checkProgress = 0;
+        Destroy(createDisplay);
         return createDone;
     }
 }

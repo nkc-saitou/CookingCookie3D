@@ -49,6 +49,12 @@ public class HumanMove : MonoBehaviour {
             Quaternion.Slerp(transform.rotation,
             Quaternion.LookRotation(humanPos.position - transform.position), 0.3f);
 
+        StartCoroutine(waitTime());
+    }
+
+    IEnumerator waitTime()
+    {
+        yield return new WaitForSeconds(1.0f);
         transform.localPosition += transform.forward * speed;
     }
 }

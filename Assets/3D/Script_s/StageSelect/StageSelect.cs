@@ -6,7 +6,8 @@ using UnityEngine.SceneManagement;
 public enum SelectType
 {
     Title = 0,
-    NormalStage
+    NormalStage,
+    HardStage
 }
 
 public class StageSelect : MonoBehaviour {
@@ -36,6 +37,10 @@ public class StageSelect : MonoBehaviour {
             case SelectType.NormalStage:
                 sceneName = "Main";
                 break;
+
+            case SelectType.HardStage:
+                sceneName = "Main_hard";
+                break;
         }
         if (Input.GetButtonDown("JoyStick_Action1") && filst)
         {
@@ -56,6 +61,4 @@ public class StageSelect : MonoBehaviour {
         yield return new WaitForSeconds(2.5f);
         SceneManager.LoadScene(name);
     }
-
-
 }

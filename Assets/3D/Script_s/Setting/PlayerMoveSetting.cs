@@ -69,12 +69,14 @@ public class PlayerMoveSetting : SingletonMonoBehaviour<PlayerMoveSetting>
                     if (childSetting.playerNumber == playerSetting.playerNumber) return;
                 }
 
+                if (MoveSettingFlg == false) MoveSettingFlg = true;
+
                 AudioManager.Instance.PlaySE("cursor");
                 Instantiate(player, parentObj.transform);
                 playerCount++;
             }
         }
-        else if ((nowScene == "Main" && filst))
+        else if ((nowScene == "Main" || nowScene == "Main_hard") && filst)
         {
             for (int i = 0; i < playerCount; i++)
             {

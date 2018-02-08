@@ -22,6 +22,8 @@ public class EnemyMove : MonoBehaviour {
 
     private int _direction;        //0:東 1:南 2:北 3:西
 
+    Animator anim;
+
     private float rotsp = 8;
     // 現在位置
     private Vector3 Position;
@@ -69,9 +71,16 @@ public class EnemyMove : MonoBehaviour {
                 tag = "E_Jam";
                 break;
         }
+
+        anim = GetComponent<Animator>();
     }
 
     void Update()
+    {
+        
+    }
+
+    void FixedUpdate()
     {
         if (!ES._Clear)
         {
@@ -160,7 +169,7 @@ public class EnemyMove : MonoBehaviour {
             }
         }
     }
-    
+
     //クッキー探査、地雷クッキーが優先される
     void SearchCookies()
     {
@@ -270,8 +279,14 @@ public class EnemyMove : MonoBehaviour {
                 GameObject[] wallObject = null;
                 wallObject = GameObject.FindGameObjectsWithTag("FactoryWall").
                 OrderBy(e => Vector3.Distance(transform.position, e.transform.position)).ToArray();
-                wallObject[0].GetComponent<WallHP>()._HP -= 1;
+                wallObject[0].GetComponent<WallHP>()._HP = Mathf.Max(wallObject[0].GetComponent<WallHP>()._HP -= 1,0);
+                anim.SetTrigger("isAttack");
                 wallAtack = true;
+
+                if(wallObject[0].GetComponent<WallHP>()._HP <= 0)
+                {
+                    anim.SetTrigger("isVictory");
+                }
             }
         }
     }

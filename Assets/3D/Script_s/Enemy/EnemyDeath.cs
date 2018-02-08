@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class EnemyDeath : MonoBehaviour {
 
@@ -11,11 +12,14 @@ public class EnemyDeath : MonoBehaviour {
     [Header("エネミーの数表示用テキスト")]
     public Text deathText;
 
-    int maxScore = 1000;
+    public Button gameOver;
 
-    public Text ScoreText;
 
-    public GameObject resultCam;
+    int maxScore = 10000;
+
+    //public Text ScoreText;
+
+    //public GameObject resultCam;
     public GameObject UIcanvas;
     public GameObject gameOverImg;
     public GameObject gameOverUIImg;
@@ -44,11 +48,10 @@ public class EnemyDeath : MonoBehaviour {
     void Start ()
     {
         _EnemyDeath = enemyDeath;
-
         //fadeOut.SetActive(false);
         endImage.SetActive(false);
         //fadeIN.SetActive(false);
-        resultCam.SetActive(false);
+        //resultCam.SetActive(false);
     }
 	
 	// Update is called once per frame
@@ -71,18 +74,19 @@ public class EnemyDeath : MonoBehaviour {
             endImage.SetActive(true);
 
             //ScoreText.text = ScoreManagerS.Instance.Score.ToString();
-
         }
 
         if(WallBreak() && first == false)
         {
             first = true;
+            gameOver.Select();
             AudioManager.Instance.PlaySE("Final");
+
             PlayerMoveSetting.Instance.MoveSettingFlg = false;
+
             gameOverImg.SetActive(true);
             gameOverUIImg.SetActive(true);
         }
-
     }
 
     bool WallBreak()
@@ -105,14 +109,16 @@ public class EnemyDeath : MonoBehaviour {
         fadeOut.SetActive(true);
         UIcanvas.SetActive(false);
 
-        yield return new WaitForSeconds(0.8f);
-        resultCam.SetActive(true);
+        SceneManager.LoadScene("ResultScene");
 
-        StartCoroutine(ScoreManagerS.Instance.ScoreAnimation(0, ScoreManagerS.Instance.Score, 10.0f, ScoreText));
-        ScoreText.gameObject.SetActive(true);
-        //Time.timeScale = 0;
+        //yield return new WaitForSeconds(0.8f);
+        //resultCam.SetActive(true);
 
-        yield return new WaitForSeconds(1.2f);
-        fadeOut.SetActive(false);
+        //StartCoroutine(ScoreManagerS.Instance.ScoreAnimation(0, ScoreManagerS.Instance.Score, 10.0f, ScoreText));
+        //ScoreText.gameObject.SetActive(true);
+        ////Time.timeScale = 0;
+
+        //yield return new WaitForSeconds(1.2f);
+        //fadeOut.SetActive(false);
     }
 }
