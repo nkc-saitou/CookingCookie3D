@@ -52,7 +52,7 @@ public class ExitTable : MonoBehaviour,IExecutable
 
     void CookieRecipe()
     {
-        if (Answer.type == setElem.type)
+        if (Answer.type == setElem.type && exit.transform.childCount != 0)
         {
             float xRotate = -90.0f;
 

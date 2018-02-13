@@ -15,7 +15,7 @@ public class EnemyDeath : MonoBehaviour {
     public Button gameOver;
 
 
-    int maxScore = 10000;
+    int maxScore = 1000;
 
     //public Text ScoreText;
 
@@ -48,10 +48,7 @@ public class EnemyDeath : MonoBehaviour {
     void Start ()
     {
         _EnemyDeath = enemyDeath;
-        //fadeOut.SetActive(false);
         endImage.SetActive(false);
-        //fadeIN.SetActive(false);
-        //resultCam.SetActive(false);
     }
 	
 	// Update is called once per frame
@@ -68,12 +65,10 @@ public class EnemyDeath : MonoBehaviour {
             first = true;
             for (int i = 0; i < wallHP.Length; i++)
             {
-                ScoreManagerS.Instance.AddScore(Mathf.FloorToInt(wallHP[i]._ScoreHP * maxScore));
+                ScoreManagerS.Instance.Score += Mathf.FloorToInt(wallHP[i]._ScoreHP * maxScore);
                 StartCoroutine(waitTime());
             }
             endImage.SetActive(true);
-
-            //ScoreText.text = ScoreManagerS.Instance.Score.ToString();
         }
 
         if(WallBreak() && first == false)
@@ -84,8 +79,7 @@ public class EnemyDeath : MonoBehaviour {
 
             PlayerMoveSetting.Instance.MoveSettingFlg = false;
 
-            gameOverImg.SetActive(true);
-            gameOverUIImg.SetActive(true);
+            StartCoroutine(gameOverWaitTime());
         }
     }
 
@@ -110,15 +104,13 @@ public class EnemyDeath : MonoBehaviour {
         UIcanvas.SetActive(false);
 
         SceneManager.LoadScene("ResultScene");
+    }
 
-        //yield return new WaitForSeconds(0.8f);
-        //resultCam.SetActive(true);
+    IEnumerator gameOverWaitTime()
+    {
+        gameOverImg.SetActive(true);
+        yield return new WaitForSeconds(2.0f);
 
-        //StartCoroutine(ScoreManagerS.Instance.ScoreAnimation(0, ScoreManagerS.Instance.Score, 10.0f, ScoreText));
-        //ScoreText.gameObject.SetActive(true);
-        ////Time.timeScale = 0;
-
-        //yield return new WaitForSeconds(1.2f);
-        //fadeOut.SetActive(false);
+        gameOverUIImg.SetActive(true);
     }
 }

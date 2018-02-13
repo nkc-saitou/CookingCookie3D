@@ -48,7 +48,12 @@ public class EnemyCreate : MonoBehaviour {
 
             if(endPoint.transform.childCount != 0)
             {
-                endPoint.transform.GetChild(0).gameObject.transform.parent = null;
+                //endPoint.transform.GetChild(0).gameObject.transform.parent = null;
+
+                foreach(Transform child in endPoint.transform)
+                {
+                    child.transform.parent = null;
+                }
             }
 
             //if (endPoint.transform.childCount != 0)

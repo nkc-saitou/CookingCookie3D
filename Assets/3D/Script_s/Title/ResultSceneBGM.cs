@@ -14,28 +14,40 @@ public class ResultSceneBGM : MonoBehaviour {
 
     public Button selectButton;
 
+    int score;
+    int highScore;
+
     string sceneName;
 
     bool filst = true;
 
-    public Text scoreText;
-    public Text highText;
+    //public Text scoreText;
+    //public Text highText;
+
+    public GameObject highScoreImg;
 
     // Use this for initialization
     void Start () {
         fadeOut.SetActive(false);
         fadeOut.SetActive(true);
 
-        selectButton.Select();
-        StartCoroutine(ScoreManagerS.Instance.ScoreAnimation(0, ScoreManagerS.Instance.Score, 5.0f, scoreText));
+        score = ScoreManagerS.Instance.Score;
+        highScore = ScoreManagerS.Instance.HighScore;
 
-        highText.text = ScoreManagerS.Instance.HighScore.ToString();
+        selectButton.Select();
+        //StartCoroutine(ScoreManagerS.Instance.ScoreAnimation(0, score, 5.0f, scoreText));
+
+        //highText.text = highScore.ToString();
+
+        if (ScoreManagerS.Instance.Score > ScoreManagerS.Instance.HighScore) highScoreImg.SetActive(true);     
+        else highScoreImg.SetActive(false);
     }
 	
 	// Update is called once per frame
 	void Update () {
-		
-	}
+        //ScoreManagerS.Instance.ScoreRenew();
+        
+    }
 
     public void TitleButton()
     {

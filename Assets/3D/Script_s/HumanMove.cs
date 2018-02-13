@@ -18,8 +18,6 @@ public class HumanMove : MonoBehaviour {
 
         dirType = transform.parent.GetComponent<DirectionType>();
 
-        Debug.Log(dirType.type);
-
 	}
 	
 	// Update is called once per frame

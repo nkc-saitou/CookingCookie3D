@@ -11,6 +11,8 @@ public class EnemyDestroy : MonoBehaviour {
     //public EnemyDeath death;
 
     bool flg = true;
+    [System.NonSerialized]
+    public bool imageChangeFlg = false;
 
     public GameObject humanPre;
     public GameObject effectPre;
@@ -47,15 +49,14 @@ public class EnemyDestroy : MonoBehaviour {
 
             Destroy(effect,1.0f);
 
-            Debug.Log(col);
-
             EnemyDeath._EnemyDeath -= 1;
+            ImageNumber._EnemyCountFlg = true;
 
             //enemyMove.Death();
             Destroy(col.gameObject);
             Destroy(gameObject);
 
-            GameObject human = Instantiate(humanPre, transform.position, Quaternion.identity,transform.parent.transform);
+            GameObject human = Instantiate(humanPre, transform.position, Quaternion.identity,transform.parent);
             Destroy(human, 3.0f);
         }
     }

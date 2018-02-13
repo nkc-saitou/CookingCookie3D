@@ -99,7 +99,6 @@ public class KneadTable : MonoBehaviour, IKitchenWare
                 if (mat.type.ToString() == "Knead_" + checkLis[0].type.ToString())
                 {
                     createDone = mat;
-                    Debug.Log(createDone);
                     DisplayCookie(createDone);
                     break;
                 }

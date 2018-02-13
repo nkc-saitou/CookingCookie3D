@@ -62,7 +62,6 @@ public class PlayerMoveSetting : SingletonMonoBehaviour<PlayerMoveSetting>
                 PlayerSetting playerSetting = player.GetComponent<PlayerSetting>();
                 playerSetting.playerNumber = JoyStickName();
 
-                Debug.Log("ok");
                 foreach (Transform child in parentObj.transform)
                 {
                     PlayerSetting childSetting = child.GetComponent<PlayerSetting>();

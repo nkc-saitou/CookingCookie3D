@@ -194,7 +194,7 @@ public class PlayerAction : MonoBehaviour {
     /// <returns></returns>
     bool BakingType(ExitTable exit)
     {
-        if (exit.Answer == null || childMat == null) return false;
+        if (exit.Answer == null || childMat == null || exit.exit.transform.childCount == 0) return false;
         if (exit.Answer.type == childMat.type) return true;
 
         //if (childMat.type == CookingMaterialType.Bake_Dough ||

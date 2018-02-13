@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Video;
 
 public enum SelectType
 {
@@ -18,8 +19,20 @@ public class StageSelect : MonoBehaviour {
 
     bool filst = true;
 
+    public GameObject stageMovie;
+    VideoPlayer video;
+
+    public VideoClip stageVideoClip;
+
+    public Animator anim;
+
     [Header("次のシーンに遷移するとき")]
     public GameObject fadeIN;
+
+    void Start()
+    {
+
+    }
 
     void Update ()
     {
@@ -49,7 +62,24 @@ public class StageSelect : MonoBehaviour {
             fadeIN.SetActive(true);
             StartCoroutine(WaitFadeIn(sceneName));
         }
-    
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (select != SelectType.Title)
+        {
+            anim.SetTrigger("MovieStart");
+            video = stageMovie.GetComponent<VideoPlayer>();
+            video.clip = stageVideoClip;
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (select != SelectType.Title)
+        {
+            anim.SetTrigger("MovieStop");
+        }
     }
 
     /// <summary>

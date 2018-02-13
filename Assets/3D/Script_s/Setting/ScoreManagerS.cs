@@ -47,6 +47,17 @@ public class ScoreManagerS: SingletonMonoBehaviour<ScoreManagerS> {
     }
 
     /// <summary>
+    /// ハイスコアを更新する
+    /// </summary>
+    public void ScoreRenew()
+    {
+        if(m_score > m_high_score)
+        {
+            m_high_score = m_score;
+        }
+    }
+
+    /// <summary>
     /// スコアの加算処理
     /// </summary>
     /// <param name="t_add_score">加算するスコア</param>
@@ -85,7 +96,7 @@ public class ScoreManagerS: SingletonMonoBehaviour<ScoreManagerS> {
     /// <param name="duration">最終的なスコアがでるまでの時間</param>
     /// <param name="scoreText">表示するテキスト</param>
     /// <returns></returns>
-    public IEnumerator ScoreAnimation(float startScore, float endScore, float duration,Text scoreText)
+    public IEnumerator ScoreAnimation(float startScore, float endScore, float duration,Text scoreText = null)
     {
         // 開始時間
         float startTime = Time.time;
@@ -101,8 +112,11 @@ public class ScoreManagerS: SingletonMonoBehaviour<ScoreManagerS> {
             // 数値を更新
             float updateValue = (float)((endScore - startScore) * timeRate + startScore);
 
-            // テキストの更新
-            scoreText.text = updateValue.ToString("f0"); // （"f0" の "0" は、小数点以下の桁数指定）
+            if (scoreText != null)
+            {
+                // テキストの更新
+                scoreText.text = updateValue.ToString("f0"); // （"f0" の "0" は、小数点以下の桁数指定）
+            }
 
             // 1フレーム待つ
             yield return null;

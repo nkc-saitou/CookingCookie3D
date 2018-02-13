@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using System.Linq;
-public class EnemyMove : MonoBehaviour {
+public class EnemyMove : MonoBehaviour
+{
 
     //行動パターン
-    public enum MovePattern {_Stalking,_Wall,_NormalMove,_CookieAtack,_Death}
-    MovePattern movepattern=MovePattern._NormalMove;
+    public enum MovePattern { _Stalking, _Wall, _NormalMove, _CookieAtack, _Death }
+    MovePattern movepattern = MovePattern._NormalMove;
 
     public enum OpponentType { C_Normal, C_Chocolate, C_Jam }
     OpponentType opponentType;
@@ -17,7 +18,7 @@ public class EnemyMove : MonoBehaviour {
     private Vector3 raydirection;
     private Ray ray;
     private RaycastHit rayhit;
-    private int distance=10;//視認距離
+    private int distance = 10;//視認距離
     private int layerMask = ~(1 << 11);
 
     private int _direction;        //0:東 1:南 2:北 3:西
@@ -29,12 +30,12 @@ public class EnemyMove : MonoBehaviour {
     private Vector3 Position;
     public int _HP = 1;
     //速さ
-    private Vector3 speed=new Vector3(0.04f,0f,0.04f);
+    private Vector3 speed = new Vector3(0.04f, 0f, 0.04f);
 
     // ラジアン
     private float rad;
     //一番近いクッキー
-    private GameObject nearestCookie=null;
+    private GameObject nearestCookie = null;
 
     //クッキーに接触しているか
     private bool nearflg = false;
@@ -52,7 +53,8 @@ public class EnemyMove : MonoBehaviour {
         set { _direction = value; }
     }
 
-    void Start() {
+    void Start()
+    {
         ES = GameObject.Find("EnemySpawn").GetComponent<EnemySpawn>();
         transform.LookAt(Vector3.zero);
         int RandomType;
@@ -77,7 +79,7 @@ public class EnemyMove : MonoBehaviour {
 
     void Update()
     {
-        
+
     }
 
     void FixedUpdate()
@@ -209,16 +211,16 @@ public class EnemyMove : MonoBehaviour {
     //壁(原点)に向かう
     void NormalMove()
     {
-        Vector3 dir = new Vector3(0,transform.position.y,0) - transform.position;
+        Vector3 dir = new Vector3(0, transform.position.y, 0) - transform.position;
         Vector3 newdir = Vector3.RotateTowards(transform.forward, dir, rotsp * Time.deltaTime, 0f);
         transform.rotation = Quaternion.LookRotation(newdir);
         rad = Mathf.Atan2(
                0 - transform.position.z,
                0 - transform.position.x);
-       Position = transform.position;
-       Position.x += speed.x * Mathf.Cos(rad);
-       Position.z += speed.z * Mathf.Sin(rad);
-       transform.position = Position;
+        Position = transform.position;
+        Position.x += speed.x * Mathf.Cos(rad);
+        Position.z += speed.z * Mathf.Sin(rad);
+        transform.position = Position;
     }
 
     //壁
@@ -226,7 +228,7 @@ public class EnemyMove : MonoBehaviour {
     {
         if (transform.position.x > 17f)
         {
-            transform.rotation = Quaternion.Slerp(transform.rotation,Quaternion.Euler(0,-90,0), Time.deltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, -90, 0), Time.deltaTime);
         }
         else if (transform.position.x < -17f)
         {
@@ -255,7 +257,7 @@ public class EnemyMove : MonoBehaviour {
     //クッキーを攻撃
     void CookieAtack()
     {
-        
+
     }
 
     //死亡処理
@@ -271,19 +273,21 @@ public class EnemyMove : MonoBehaviour {
     //壁殴り
     private IEnumerator WallAtack()
     {
-        yield return new WaitForSeconds(3f);
         if (!ES._Clear)
         {
             if (GameObject.FindGameObjectWithTag("FactoryWall"))
             {
+                anim.SetTrigger("isAttack");
+
+                yield return new WaitForSeconds(3f);
+
                 GameObject[] wallObject = null;
                 wallObject = GameObject.FindGameObjectsWithTag("FactoryWall").
                 OrderBy(e => Vector3.Distance(transform.position, e.transform.position)).ToArray();
-                wallObject[0].GetComponent<WallHP>()._HP = Mathf.Max(wallObject[0].GetComponent<WallHP>()._HP -= 1,0);
-                anim.SetTrigger("isAttack");
+                wallObject[0].GetComponent<WallHP>()._HP = Mathf.Max(wallObject[0].GetComponent<WallHP>()._HP -= 1, 0);
                 wallAtack = true;
 
-                if(wallObject[0].GetComponent<WallHP>()._HP <= 0)
+                if (wallObject[0].GetComponent<WallHP>()._HP <= 0)
                 {
                     anim.SetTrigger("isVictory");
                 }
@@ -292,9 +296,7 @@ public class EnemyMove : MonoBehaviour {
     }
 
 
-
-
-void OnTriggerEnter(Collider col)
+    void OnTriggerEnter(Collider col)
     {
         if (col.tag == opponentType.ToString())
         {
@@ -304,7 +306,7 @@ void OnTriggerEnter(Collider col)
         {
             wall = true;
         }
-        
+
     }
 
     void OnTriggerExit(Collider col)

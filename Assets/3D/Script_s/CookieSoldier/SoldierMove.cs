@@ -16,12 +16,15 @@ public class SoldierMove : MonoBehaviour {
 
     void Update()
     {
-        parentObj = transform.parent.gameObject.transform.GetChild(0).gameObject;
+        if (transform.parent.gameObject.transform.GetChild(0).gameObject != null)
+        {
+            parentObj = transform.parent.gameObject.transform.GetChild(0).gameObject;
 
-        transform.rotation = 
-            Quaternion.Slerp(transform.rotation, 
-            Quaternion.LookRotation(parentObj.transform.localPosition - transform.localPosition), 0.3f);
+            transform.rotation =
+                Quaternion.Slerp(transform.rotation,
+                Quaternion.LookRotation(parentObj.transform.localPosition - transform.localPosition), 0.3f);
 
-        transform.localPosition += transform.forward * speed;
+            transform.localPosition += transform.forward * speed;
+        }
     }
 }
