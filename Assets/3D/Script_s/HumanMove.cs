@@ -4,26 +4,25 @@ using UnityEngine;
 
 public class HumanMove : MonoBehaviour {
 
+    //逃げる速度
     public float speed = 0.05f;
+
+    //humanの逃げる場所
     [Header("北、南、西、東")]
-    public Transform[] createPos; //humanの逃げる場所
+    public Transform[] createPos;
 
     Transform humanPos;
-    private Vector3 vec;
 
     DirectionType dirType;
 
-    // Use this for initialization
     void Start () {
 
         dirType = transform.parent.GetComponent<DirectionType>();
 
 	}
-	
-	// Update is called once per frame
+
 	void Update ()
     {
-
         switch(dirType.type)
         {
             case Direction.Noth:
@@ -43,14 +42,19 @@ public class HumanMove : MonoBehaviour {
                 break;
         }
 
+        //逃げる方向にhumanを向かせる
         transform.rotation =
             Quaternion.Slerp(transform.rotation,
             Quaternion.LookRotation(humanPos.position - transform.position), 0.3f);
 
-        StartCoroutine(waitTime());
+        StartCoroutine(HumanWaitTime());
     }
 
-    IEnumerator waitTime()
+    /// <summary>
+    /// 人間が走ってい逃げていく処理
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator HumanWaitTime()
     {
         yield return new WaitForSeconds(1.0f);
         transform.localPosition += transform.forward * speed;

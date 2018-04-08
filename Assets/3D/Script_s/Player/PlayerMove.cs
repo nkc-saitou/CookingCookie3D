@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-//[RequireComponent(typeof(Rigidbody))]
 public class PlayerMove : MonoBehaviour {
-
-    //public GameObject test;
 
     public bool animWalkFlg { get; set; }
 

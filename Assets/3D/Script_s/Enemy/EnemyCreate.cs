@@ -6,66 +6,65 @@ public class EnemyCreate : MonoBehaviour {
 
     RandomEnemy rand;
 
-    NumberofEnemy numEnemy;
-
+    //壁際で止まる位置
     public GameObject endPoint;
 
+    //壁のHP
     public WallHP wallHP;
 
+    //敵をランダムで出現させる
     int randomNum;
 
+    //生成を止めるためのフラグ
     bool stopCreate = false;
+
+    //生成するのは一度だけ
     bool createFilst = true;
 
-    // Use this for initialization
     void Start () {
         rand = transform.parent.GetComponent<RandomEnemy>();
-        //numEnemy = GameObject.FindObjectOfType<NumberofEnemy>().GetComponent<NumberofEnemy>();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-
-
-    }
 
     void FixedUpdate()
     {
+        //敵の種類をランダムで選ぶ
         randomNum = Random.Range(0, rand.CreateCookie.Length);
 
+        //クッキーがおらず、出せる状態のとき
         if (endPoint.transform.childCount == 0 && stopCreate == false && createFilst)
         {
             createFilst = false;
-            //Instantiate(rand.CreateCookie[randomNum], gameObject.transform.position, Quaternion.identity, endPoint.transform);
-            //rand.createEnemy--;
-            StartCoroutine(waitTime());
+
+            StartCoroutine(EnemyWaitTime());
         }
 
-        if (wallHP.breakFlg == true || rand.createEnemy <= 0 || EnemyDeath._EnemyDeath <= 0)
+        //ゲームオーバー、ゲームクリア時
+        if (wallHP.breakFlg == true ||EnemyDeath._EnemyDeath <= 0)
         {
             //クッキーの生成を止める
             stopCreate = true;
 
+            //敵クッキーがいる状態だったら
             if(endPoint.transform.childCount != 0)
             {
-                //endPoint.transform.GetChild(0).gameObject.transform.parent = null;
-
                 foreach(Transform child in endPoint.transform)
                 {
                     child.transform.parent = null;
                 }
             }
-
-            //if (endPoint.transform.childCount != 0)
-            //{
-            //    Destroy(endPoint.transform.GetChild(0).gameObject, 3.0f);
-            //}
         }
     }
 
-    IEnumerator waitTime()
+    /// <summary>
+    /// クッキーを作るための処理
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator EnemyWaitTime()
     {
+        //生成のタイミングを一瞬遅らせる
         yield return new WaitForSeconds(0.5f);
+
+        //クッキーを生成
         Instantiate(rand.CreateCookie[randomNum], gameObject.transform.position, Quaternion.identity, endPoint.transform);
         createFilst = true;
     }

@@ -32,10 +32,10 @@ public class MenuSetting : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        startButton.Select();
 
         if (Input.GetButtonDown("JoyStick_menu") && menuFlg == false)
         {
+            startButton.Select();
             menu.SetActive(true);
             Time.timeScale = 0;
             menuFlg = true;

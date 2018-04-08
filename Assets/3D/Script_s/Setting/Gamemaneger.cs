@@ -25,7 +25,7 @@ public class Gamemaneger : MonoBehaviour {
 	
 
 	void Update () {
-        if (rand.createEnemy <= 0&&
+        if (/*rand.createEnemy <= 0&&*/
             endPoint[0].transform.childCount == 0&&
             endPoint[1].transform.childCount == 0&&
             endPoint[2].transform.childCount == 0&&

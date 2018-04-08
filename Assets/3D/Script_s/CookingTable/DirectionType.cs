@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 方向を指定する
+/// </summary>
 public enum Direction
 {
     Noth,
@@ -14,13 +17,4 @@ public class DirectionType : MonoBehaviour {
 
     public Direction type;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 }

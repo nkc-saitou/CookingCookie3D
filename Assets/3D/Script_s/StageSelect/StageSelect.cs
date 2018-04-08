@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Video;
+using UnityEngine.UI;
 
 public enum SelectType
 {
     Title = 0,
+    EasyStage,
     NormalStage,
     HardStage
 }
@@ -19,10 +21,17 @@ public class StageSelect : MonoBehaviour {
 
     bool filst = true;
 
-    public GameObject stageMovie;
-    VideoPlayer video;
+    public Image stageMovie;
+    public Image gameStartImg;
 
-    public VideoClip stageVideoClip;
+    [Header("ゲーム開始のスプライト")]
+    public Sprite startSp;
+
+    [Header("プレイヤーエントリーのスプライト")]
+    public Sprite playerEntry;
+
+    [Header("ステージのスプライト")]
+    public Sprite sprite;
 
     public Animator anim;
 
@@ -36,7 +45,7 @@ public class StageSelect : MonoBehaviour {
 
     void Update ()
     {
-		
+
 	}
 
     void OnTriggerStay(Collider other)
@@ -47,12 +56,16 @@ public class StageSelect : MonoBehaviour {
                 sceneName = "Title";
                 break;
 
+            case SelectType.EasyStage:
+                sceneName = "Main_Easy";
+                break;
+
             case SelectType.NormalStage:
                 sceneName = "Main";
                 break;
 
             case SelectType.HardStage:
-                sceneName = "Main_hard";
+                sceneName = "Main_Hard";
                 break;
         }
         if (Input.GetButtonDown("JoyStick_Action1") && filst)
@@ -66,11 +79,12 @@ public class StageSelect : MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
+        //タイトルへ行くボタン以外だったら
         if (select != SelectType.Title)
         {
             anim.SetTrigger("MovieStart");
-            video = stageMovie.GetComponent<VideoPlayer>();
-            video.clip = stageVideoClip;
+            gameStartImg.sprite = startSp;
+            stageMovie.sprite = sprite;
         }
     }
 
@@ -79,6 +93,7 @@ public class StageSelect : MonoBehaviour {
         if (select != SelectType.Title)
         {
             anim.SetTrigger("MovieStop");
+            gameStartImg.sprite = playerEntry;
         }
     }
 

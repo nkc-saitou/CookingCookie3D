@@ -5,13 +5,11 @@ using UnityEngine.UI;
 
 public class CookieSoldier : MonoBehaviour {
 
-
+    //作った味方クッキー
     [Header("クッキー兵士(ノーマル、チョコ、ジャム)")]
     public GameObject[] setCookie;
 
-    /// <summary>
-    /// ノーマル、チョコ、ジャム
-    /// </summary>
+    //答えクッキーを視覚化するための画像
     [Header("ノーマル、チョコ、ジャム")]
     public Sprite[] answerImage;
 }

@@ -7,10 +7,12 @@ using UnityEngine;
 /// </summary>
 public interface IKitchenWare : IExecutable {
 
+    //置いた素材を格納
     List<CookingMaterial> elemLis
     {
         get;
     }
 
+    //料理進行度をチェックする
     float CheckProgress();
 }

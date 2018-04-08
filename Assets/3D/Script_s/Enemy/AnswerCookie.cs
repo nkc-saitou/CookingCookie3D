@@ -5,9 +5,13 @@ using UnityEngine.UI;
 
 public class AnswerCookie : MonoBehaviour {
 
+    //答えクッキーのイメージ
     public CookieSoldier cookieImage;
 
+    //答えクッキーを表示するための画像
     public Image answer;
+
+    //表示と非表示を切り替えるための変数
     Color answerColor;
 
 	void Start ()
@@ -17,6 +21,7 @@ public class AnswerCookie : MonoBehaviour {
 
     void Update()
     {
+        //敵クッキーが湧いていたら
         if (transform.childCount != 0)
         {
             //子オブジェクトの取得
@@ -45,6 +50,7 @@ public class AnswerCookie : MonoBehaviour {
             }
             answerColor.a = 1;
         }
+        //湧いていなかったら
         else
         {
             answerColor.a = 0;

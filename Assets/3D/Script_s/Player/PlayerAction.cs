@@ -8,36 +8,41 @@ public class PlayerAction : MonoBehaviour {
     //-------------------------------------------
     // public
     //-------------------------------------------
-    public Transform childPos;
+
+    //素材を持つ位置
+    public Transform havePos;
 
     //-------------------------------------------
     // private
     //-------------------------------------------
+
+    //衝突した机のinterfaceを取得するための変数
     IExecutable exe;
     IKitchenWare kit;
 
+    //衝突した机にアタッチされているスプリクトを取得
     TableKind table;
+    KneadTable knead;
     BakingTable bake;
 
-    PlayerSetting set_p;
+    PlayerSetting setting;
 
-    GameObject childObj;
+    //もっている素材
+    GameObject haveObj;
 
-    int childCount = 0;
+    //持っているオブジェクトの数
+    int haveObjCount = 0;
 
-    CookingMaterial childMat;
+    //素材の種類を取得
+    CookingMaterial haveObjMat;
 
-	// Use this for initialization
 	void Start ()
     {
-        table = new TableKind();
-        bake = new BakingTable();
-
-        childCount = transform.childCount;
-        set_p = GetComponent<PlayerSetting>();
+        //子オブジェクトの数
+        haveObjCount = transform.childCount;
+        setting = GetComponent<PlayerSetting>();
 	}
-	
-	// Update is called once per frame
+
 	void Update ()
     {
         HaveCookieManager();
@@ -50,7 +55,7 @@ public class PlayerAction : MonoBehaviour {
     /// <returns>持っていたらtreu,いなかったらfalse</returns>
     bool HaveChildObj()
     {
-        if (transform.childCount < childCount + 1) return false;
+        if (transform.childCount < haveObjCount + 1) return false;
         else return true;
     }
 
@@ -60,50 +65,49 @@ public class PlayerAction : MonoBehaviour {
     void HaveCookieManager()
     {
         //子オブジェクトの特定
-        if (transform.childCount >= childCount + 1)
+        if (transform.childCount >= haveObjCount + 1)
         {
-            childObj = transform.GetChild(childCount).gameObject;
+            haveObj = transform.GetChild(haveObjCount).gameObject;
 
-            childMat = childObj.GetComponent<CookingMaterial>();
+            haveObjMat = haveObj.GetComponent<CookingMaterial>();
 
-            childObj.transform.localPosition = childPos.localPosition;
+            haveObj.transform.localPosition = havePos.localPosition;
         }
-        ////子オブジェクトを持っていなかったら初期化
-        //else if (transform.childCount < childCount)
-        //{
-        //    childObj = null;
-        //    childMat = null;
-        //    //test.text = null;
-        //}
     }
 
     void OnCollisionStay(Collision col)
     {
-        if (Input.GetButtonDown(set_p.keyAction))
+        //各コントローラーのAction1ボタンが押されたら
+        if (Input.GetButtonDown(setting.keyAction))
         {
+            //衝突した机の種類を取得、tableKindがついていないオブジェクトだったら処理を中断
             table = col.gameObject.GetComponent(typeof(TableKind)) as TableKind;
             if (table == null) return;
 
+            //衝突した机のinterfaceを取得する
             exe = col.gameObject.GetComponent(typeof(IExecutable)) as IExecutable;
             kit = col.gameObject.GetComponent(typeof(IKitchenWare)) as IKitchenWare;
 
             switch (table.type)
             {
+                //素材テーブル
                 case TableType.ElemTable:
 
                     SetGet_exe();
                     break;
 
+                //こねるテーブル
                 case TableType.KneadTable:
 
-                    KneadTable knead = new KneadTable();
                     knead = col.gameObject.GetComponent<KneadTable>();
 
-                    if (knead.elemLis.Count <= 1 && ElemType() && knead.createDone == null)
+                    //入れる
+                    if (knead.elemLis.Count < 2 && ElemType() && knead.createDone == null)
                     {
                         KneadSetGet_kit();
-                        Destroy(childObj);
+                        Destroy(haveObj);
                     }
+                    //出す
                     else if (knead.createDone != null && HaveChildObj() == false && knead.CheckProgress() == 1)
                     {
                         KneadSetGet_kit();
@@ -112,15 +116,16 @@ public class PlayerAction : MonoBehaviour {
 
                     break;
 
+                //オーブン
                 case TableType.BakingTable:
 
-                    BakingTable bake = col.gameObject.GetComponent<BakingTable>();
+                    bake = col.gameObject.GetComponent<BakingTable>();
 
                     //入れる
-                    if (KneadType() && bake.elemLis.Count <= 0 && HaveChildObj() && bake.createDone == null)
+                    if (KneadType() && bake.elemLis.Count <= 0 && bake.createDone == null)
                     {
                         OvenSetGet_kit();
-                        Destroy(childObj);
+                        Destroy(haveObj);
                     }
                     //出す
                     else if (bake.createDone != null && HaveChildObj() == false && bake.CheckProgress() == 1)
@@ -131,22 +136,24 @@ public class PlayerAction : MonoBehaviour {
 
                     break;
 
+                //コンベア
                 case TableType.ExitTable:
 
                     ExitTable exit = col.gameObject.GetComponent<ExitTable>();
 
-                    if (exit != null || childMat != null)
+                    //入れる
+                    if (HaveChildObj() && BakingType(exit))
                     {
-                        if (HaveChildObj() && BakingType(exit))
-                        {
-                            exe.SetElement(childMat);
-                            childMat = null;
-                            Destroy(childObj);
-                        }
+                        exe.SetElement(haveObjMat);
+                        haveObjMat = null;
+                        Destroy(haveObj);
                     }
-                    break;
+                    //出す
+                    else if (haveObjMat != null && BakingType(exit) == false)
+                    {
+                        exit.missImg.SetActive(true);
+                    }
 
-                case TableType.Table:
                     break;
             }
         }
@@ -157,17 +164,25 @@ public class PlayerAction : MonoBehaviour {
         FloorUp(col.gameObject);
     }
 
+    void OnCollisionExit(Collision col)
+    {
+        //各変数の初期化
+        table = null;
+        exe = null;
+        kit = null;
+    }
+
     /// <summary>
     /// 入れられた素材がテーブルに入れられる素材かどうかを判断
     /// </summary>
     /// <returns></returns>
     bool ElemType()
     {
-        if (childMat == null) return false;
+        if (haveObjMat == null) return false;
 
-        if (childMat.type == CookingMaterialType.Dough ||
-            childMat.type == CookingMaterialType.Jam ||
-            childMat.type == CookingMaterialType.Choco) return true;
+        if (haveObjMat.type == CookingMaterialType.Dough ||
+            haveObjMat.type == CookingMaterialType.Jam ||
+            haveObjMat.type == CookingMaterialType.Choco) return true;
 
         return false;
     }
@@ -178,12 +193,12 @@ public class PlayerAction : MonoBehaviour {
     /// <returns></returns>
     bool KneadType()
     {
-        if (childMat == null) return false;
+        if (haveObjMat == null) return false;
 
-        if (childMat.type == CookingMaterialType.Knead_Dough ||
-            childMat.type == CookingMaterialType.Knead_Jam ||
-            childMat.type == CookingMaterialType.Knead_Choco ||
-            childMat.type == CookingMaterialType.Knead_DarkMatter) return true;
+        if (haveObjMat.type == CookingMaterialType.Knead_Dough ||
+            haveObjMat.type == CookingMaterialType.Knead_Jam ||
+            haveObjMat.type == CookingMaterialType.Knead_Choco ||
+            haveObjMat.type == CookingMaterialType.Knead_DarkMatter) return true;
 
         return false;
     }
@@ -194,12 +209,8 @@ public class PlayerAction : MonoBehaviour {
     /// <returns></returns>
     bool BakingType(ExitTable exit)
     {
-        if (exit.Answer == null || childMat == null || exit.exit.transform.childCount == 0) return false;
-        if (exit.Answer.type == childMat.type) return true;
-
-        //if (childMat.type == CookingMaterialType.Bake_Dough ||
-          //  childMat.type == CookingMaterialType.Bake_Jam ||
-            //childMat.type == CookingMaterialType.Bake_Choco) return true;
+        if (exit.Answer == null || haveObjMat == null || exit.exit.transform.childCount == 0) return false;
+        if (exit.Answer.type == haveObjMat.type) return true;
 
         return false;
     }
@@ -212,57 +223,56 @@ public class PlayerAction : MonoBehaviour {
     {
         if (HaveChildObj() == false)
         {
-            childMat = exe.GetElement();
-            Instantiate(childMat.gameObject, transform);
+            haveObjMat = exe.GetElement();
+            Instantiate(haveObjMat.gameObject, transform);
         }
     }
 
+    /// <summary>
+    /// オーブン素材のゲットセット
+    /// </summary>
+    /// <param name="exe"></param>
     void OvenSetGet_kit()
     {
+        //ゲット
         if (HaveChildObj() == false)
         {
-            childMat = kit.GetElement();
-            if (childMat != null)
+            haveObjMat = kit.GetElement();
+            if (haveObjMat != null)
             {
-                Instantiate(childMat.gameObject, transform);
+                Instantiate(haveObjMat.gameObject, transform);
                 bake.createDone = null;
             }
         }
-        else
+        //セット
+        else if (haveObjMat != null)
         {
-            if (childMat != null)
-            {
-                kit.SetElement(childMat);
-                childMat = null;
-            }
+            kit.SetElement(haveObjMat);
+            haveObjMat = null;
         }
     }
 
+    /// <summary>
+    /// こねる机の素材のゲットセット
+    /// </summary>
+    /// <param name="exe"></param>
     void KneadSetGet_kit()
     {
+        //ゲット
         if (HaveChildObj() == false)
         {
-            childMat = kit.GetElement();
-            if (childMat != null)
+            haveObjMat = kit.GetElement();
+            if (haveObjMat != null)
             {
-                Instantiate(childMat.gameObject, transform);
+                Instantiate(haveObjMat.gameObject, transform);
             }
         }
-        else
+        //セット
+        else if (haveObjMat != null)
         {
-            if (childMat != null)
-            {
-                kit.SetElement(childMat);
-                childMat = null;
-            }
+            kit.SetElement(haveObjMat);
+            haveObjMat = null;
         }
-    }
-
-    void OnCollisionExit(Collision col)
-    {
-        table = null;
-        exe = null;
-        kit = null;
     }
 
     /// <summary>
@@ -273,18 +283,18 @@ public class PlayerAction : MonoBehaviour {
         // クッキーを持っていなかったら終了
         if (HaveChildObj() == false) return;
 
-        if (Input.GetButtonUp(set_p.keyAction_2) && childObj != null)
+        if (Input.GetButtonUp(setting.keyAction_2) && haveObj != null)
         {
-            childObj.transform.position = gameObject.transform.position;
-            Vector3 pos = childPos.transform.position;
+            haveObj.transform.position = gameObject.transform.position;
+            Vector3 pos = haveObj.transform.position;
             pos.y += 0.3f;
-            childObj.transform.position = pos;
+            haveObj.transform.position = pos;
 
             // 親子関係を解除
-            childObj.transform.parent = null;
+            haveObj.transform.parent = null;
 
             // 子オブジェクトを初期化
-            childObj = null;
+            haveObj = null;
         }
     }
 
@@ -294,13 +304,14 @@ public class PlayerAction : MonoBehaviour {
     /// <param name="col">衝突した物</param>
     void FloorUp(GameObject col)
     {
+        //オブジェクトを持っていなかったら処理を中断
         if (HaveChildObj()) return;
 
+        //落ちてるものが素材かどうかを判断する
         CookingMaterial floorMat;
-
         floorMat = col.GetComponent(typeof(CookingMaterial)) as CookingMaterial;
 
-        if(Input.GetButtonUp(set_p.keyAction) && floorMat != null)
+        if(Input.GetButtonUp(setting.keyAction) && floorMat != null)
         {
             col.transform.parent = transform;
         }

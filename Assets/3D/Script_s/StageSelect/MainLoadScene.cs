@@ -36,7 +36,7 @@ public class MainLoadScene : MonoBehaviour {
             StartCoroutine(WaitFadeIn(sceneName));
         }
 
-        PlayerMoveSetting.Instance.filst = true;
+        //PlayerMoveSetting.filst = true;
     }
 
     public void OnStageSelectButton()
@@ -50,7 +50,7 @@ public class MainLoadScene : MonoBehaviour {
             StartCoroutine(WaitFadeIn(sceneName));
         }
 
-        PlayerMoveSetting.Instance.playerCount = 0;
+        PlayerMoveSetting.playerCount = 0;
     }
 
     public void OnTitleButton()
@@ -64,7 +64,7 @@ public class MainLoadScene : MonoBehaviour {
             StartCoroutine(WaitFadeIn(sceneName));
         }
 
-        PlayerMoveSetting.Instance.playerCount = 0;
+        PlayerMoveSetting.playerCount = 0;
     }
 
     /// <summary>

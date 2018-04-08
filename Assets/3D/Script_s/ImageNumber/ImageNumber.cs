@@ -18,8 +18,6 @@ public class ImageNumber : MonoBehaviour {
 
     public Sprite[] scoreNum;
 
-    EnemyDestroy enemyDestroy;
-
     public static bool _EnemyCountFlg = false;
 
     int score;
@@ -74,7 +72,6 @@ public class ImageNumber : MonoBehaviour {
 
             case NumberType.highScore:
                 imageNum = ScoreManagerS.Instance.HighScore;
-                Debug.Log(imageNum);
                 ChangeImage();
                 break;
         }

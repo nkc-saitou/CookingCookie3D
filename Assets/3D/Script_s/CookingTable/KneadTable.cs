@@ -10,17 +10,21 @@ public class KneadTable : MonoBehaviour, IKitchenWare
     //-----------------------------------------------
     // private
     //-----------------------------------------------
-
-    CookingMaterial[] checkLis;
-
-    //レシピ
-    CookieKnead createCookie;
-
     //表示用のクッキーを出す位置
     [Header("１つめの素材、２つめの素材、出来たクッキー")]
     public Transform[] displayPos;
 
     public GameObject effectPre;
+
+    //-----------------------------------------------
+    // private
+    //-----------------------------------------------
+
+    //入れられた素材がレシピ通りかを判定する用の配列
+    CookingMaterial[] checkLis;
+
+    //レシピ
+    CookieKnead createCookie;
 
     //調理進行度
     float progress = 0;
@@ -36,6 +40,9 @@ public class KneadTable : MonoBehaviour, IKitchenWare
         get; private set;
     }
 
+    /// <summary>
+    /// 作ったクッキーを格納する
+    /// </summary>
     public CookingMaterial createDone
     {
         get; set;
@@ -47,14 +54,6 @@ public class KneadTable : MonoBehaviour, IKitchenWare
         elemLis = new List<CookingMaterial>();
 
         createCookie = transform.parent.GetComponent<CookieKnead>();
-
-        //継続的に代入できればいい
-        //float a = StartCoroutine(Cooking());
-    }
-
-    void Update()
-    {
-
     }
 
     /// <summary>
@@ -73,7 +72,6 @@ public class KneadTable : MonoBehaviour, IKitchenWare
             t += Time.deltaTime;
             progress = Mathf.Min(t / cookingTime, 1.0f);
         }
-        //if (checkProgress >= 1.0f) checkProgress = 1.0f;
     }
 
     /// <summary>
@@ -103,14 +101,14 @@ public class KneadTable : MonoBehaviour, IKitchenWare
                     break;
                 }
             }
-            else if (mat.type == CookingMaterialType.Knead_DarkMatter) //レシピと違う場合はダークマター
+            //レシピと違う場合はダークマター
+            else if (mat.type == CookingMaterialType.Knead_DarkMatter) 
             {
                 createDone = mat;
                 DisplayCookie(mat);
                 break;
             }
         }
-        //elemLis.Clear();
     }
 
     /// <summary>
@@ -119,10 +117,11 @@ public class KneadTable : MonoBehaviour, IKitchenWare
     /// <param name="mat">素材の種類</param>
     public void SetElement(CookingMaterial mat)
     {
+        //入れた素材をリストに格納
         elemLis.Add(mat);
-
         DisplayElem(mat);
 
+        //二つの素材が入っていたら
         if (elemLis.Count == 2)
         {
             //調理をはじめる
@@ -138,11 +137,9 @@ public class KneadTable : MonoBehaviour, IKitchenWare
     {
         if (CheckProgress() != 1) return null;
 
-        //Debug.Log(elemLis[0].gameObject);
         DisplayDestroy();
         elemLis.Clear();
         progress = 0;
-        //DisplayDestroy();
         return createDone;
     }
 

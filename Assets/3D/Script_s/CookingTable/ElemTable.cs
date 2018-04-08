@@ -5,32 +5,15 @@ using UnityEngine;
 public class ElemTable : MonoBehaviour,IExecutable {
 
     //---------------------------------------------------
-    // private
-    //---------------------------------------------------
-
-    //---------------------------------------------------
     // public
     //---------------------------------------------------
 
+    //出す素材
     public CookingMaterial elemMat;
 
-    // Use this for initialization
-    void Start ()
-    {
+    public void SetElement(CookingMaterial mat) { }
 
-	}
-	
-	// Update is called once per frame
-	void Update ()
-    {
-		
-	}
-
-    public void SetElement(CookingMaterial mat)
-    {
-
-    }
-
+    //クッキーの素材を出す
     public CookingMaterial GetElement()
     {
         return elemMat;

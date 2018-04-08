@@ -8,7 +8,6 @@ public class EnemyDestroy : MonoBehaviour {
     CookingMaterial cookieType;
 
     EnemyMove enemyMove;
-    //public EnemyDeath death;
 
     bool flg = true;
     [System.NonSerialized]
@@ -17,15 +16,9 @@ public class EnemyDestroy : MonoBehaviour {
     public GameObject humanPre;
     public GameObject effectPre;
 
-	// Use this for initialization
 	void Start () {
         enemyType = GetComponent<CookingMaterial>();
         enemyMove = GetComponent<EnemyMove>();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-
 	}
 
     void OnCollisionStay(Collision col)
@@ -35,7 +28,6 @@ public class EnemyDestroy : MonoBehaviour {
 
     IEnumerator DestroyCookie(GameObject col)
     {
-
         cookieType = col.GetComponent<CookingMaterial>();
 
         if (cookieType == null) yield break;
@@ -52,7 +44,6 @@ public class EnemyDestroy : MonoBehaviour {
             EnemyDeath._EnemyDeath -= 1;
             ImageNumber._EnemyCountFlg = true;
 
-            //enemyMove.Death();
             Destroy(col.gameObject);
             Destroy(gameObject);
 

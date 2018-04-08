@@ -4,26 +4,25 @@ using UnityEngine;
 
 public class SoldierMove : MonoBehaviour {
 
-    GameObject parentObj;
+    //親オブジェクト
+    GameObject EnemyCookieObj;
 
+    //移動スピード
     public float speed = 0.1f;
-    private Vector3 vec;
-
-    void Start ()
-    {
-		
-	}
 
     void Update()
     {
-        if (transform.parent.gameObject.transform.GetChild(0).gameObject != null)
+        if (transform.parent != null)
         {
-            parentObj = transform.parent.gameObject.transform.GetChild(0).gameObject;
+            //敵クッキー
+            EnemyCookieObj = transform.parent.gameObject.transform.GetChild(0).gameObject;
 
+            //敵クッキーの方向を向く
             transform.rotation =
                 Quaternion.Slerp(transform.rotation,
-                Quaternion.LookRotation(parentObj.transform.localPosition - transform.localPosition), 0.3f);
+                Quaternion.LookRotation(EnemyCookieObj.transform.localPosition - transform.localPosition), 0.3f);
 
+            //移動
             transform.localPosition += transform.forward * speed;
         }
     }

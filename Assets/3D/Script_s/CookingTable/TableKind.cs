@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// テーブルの種類
+/// </summary>
 public enum TableType
 {
     Table = 0,

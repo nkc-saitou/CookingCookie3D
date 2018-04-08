@@ -39,8 +39,8 @@ public class ResultSceneBGM : MonoBehaviour {
 
         //highText.text = highScore.ToString();
 
-        if (ScoreManagerS.Instance.Score > ScoreManagerS.Instance.HighScore) highScoreImg.SetActive(true);     
-        else highScoreImg.SetActive(false);
+        //if (ScoreManagerS.Instance.Score > ScoreManagerS.Instance.HighScore) highScoreImg.SetActive(true);     
+        //else highScoreImg.SetActive(false);
     }
 	
 	// Update is called once per frame

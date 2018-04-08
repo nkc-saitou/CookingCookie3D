@@ -25,7 +25,6 @@ public class PlayerSetting : MonoBehaviour {
     [SerializeField, Header("移動速度"), Range(0, 10)]
     public float speed = 3.0f;
 
-    //[SerializeField, Header("ゲームパッドでプレイするか")]
     //ゲームパッドかどうか
     bool playIsGamePad = false;
 
@@ -56,14 +55,6 @@ public class PlayerSetting : MonoBehaviour {
     {
         GamePlayers();
         KeySetting();
-
-        SceneManager.activeSceneChanged += OnActiveSceneChanged;
-    }
-
-    void OnActiveSceneChanged(Scene prevScene, Scene nextScene)
-    {
-        //transform.position = StartPos.position;
-        //transform.rotation = Quaternion.identity;
     }
 
     //-----------------------------------
