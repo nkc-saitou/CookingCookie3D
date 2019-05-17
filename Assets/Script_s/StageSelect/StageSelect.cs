@@ -82,7 +82,7 @@ public class StageSelect : MonoBehaviour {
         //タイトルへ行くボタン以外だったら
         if (select != SelectType.Title)
         {
-            anim.SetTrigger("MovieStart");
+            anim.SetBool("IsStop",false);
             gameStartImg.sprite = startSp;
             stageMovie.sprite = sprite;
         }
@@ -92,7 +92,7 @@ public class StageSelect : MonoBehaviour {
     {
         if (select != SelectType.Title)
         {
-            anim.SetTrigger("MovieStop");
+            anim.SetBool("IsStop", true);
             gameStartImg.sprite = playerEntry;
         }
     }
